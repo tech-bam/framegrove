@@ -27,8 +27,14 @@ jobs:
           test "$(node -p "require('./.claude-plugin/plugin.json').version")" = "$tag"
       - run: npm ci
         working-directory: mcp
-      - run: npm publish --provenance --access public
+      - name: Publish to npm (skipped when this version is already on npm)
         working-directory: mcp
+        run: |
+          if npm view "framegrove@$(node -p "require('./package.json').version")" version >/dev/null 2>&1; then
+            echo "Already on npm"
+          else
+            npm publish --provenance --access public
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Publish to the MCP Registry
