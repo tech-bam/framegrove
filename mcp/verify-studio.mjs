@@ -9,11 +9,11 @@ import { buildProject, renderSet } from './render-node.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const w = { console, document: { currentScript: null, write() {}, fonts:null, createElement:()=>createCanvas(1,1) }, navigator:{language:'en'}, localStorage:{getItem:()=>null,setItem(){}} };
 w.window=w;vm.createContext(w);
-for(const file of ['i18n.js','frames.js','devices.js','render.js','model.js','tpl-dsl.js','templates/index.js', ...['legacy','set-a','set-b','set-c','set-d','set-e','set-f','studio'].map(x=>'templates/'+x+'.js')]) vm.runInContext(fs.readFileSync(path.join(root,'engine',file),'utf8'),w,{filename:file});
+for(const file of ['i18n.js','frames.js','devices.js','render.js','model.js','tpl-dsl.js','templates/index.js', ...['legacy','set-a','set-b','set-c','set-d','set-e','set-f','studio','duo'].map(x=>'templates/'+x+'.js')]) vm.runInContext(fs.readFileSync(path.join(root,'engine',file),'utf8'),w,{filename:file});
 const templates=w.TEMPLATES.filter(t=>!t.archived);
-assert.equal(templates.length,44); assert.equal(new Set(w.TEMPLATES.map(t=>t.key)).size,w.TEMPLATES.length);
+assert.equal(templates.length,56); assert.equal(new Set(w.TEMPLATES.map(t=>t.key)).size,w.TEMPLATES.length);
 assert(w.TEMPLATES.find(t=>t.key==='pluto').archived,'Legacy keys must remain available');
-const sheet=createCanvas(4*330,11*300), sheetCtx=sheet.getContext('2d');sheetCtx.fillStyle='#e5e5df';sheetCtx.fillRect(0,0,sheet.width,sheet.height);
+const sheet=createCanvas(4*330,14*300), sheetCtx=sheet.getContext('2d');sheetCtx.fillStyle='#e5e5df';sheetCtx.fillRect(0,0,sheet.width,sheet.height);
 let rendered=0;
 for(const [idx,tpl] of templates.entries()) {
  const {project}=await buildProject({template:tpl.key,addIcon:false});
@@ -40,6 +40,18 @@ for(const placement of ['header','search','universal']) {
  const png=fs.readFileSync(result.files[0]), im=await loadImage(png), o=w.Devices.byId('apple-'+placement);
  assert.equal(im.width,o.w);assert.equal(im.height,o.h);
  assert.equal(png[25],2,'Apple PNG must be RGB without alpha channel');
+}
+for(const mode of ['outer','inner','inner-landscape']) {
+ const tpl='duo-paper-'+mode, id=mode==='outer'?'iphone-duo-outer':'iphone-duo-inner';
+ const result=await renderSet({template:tpl,addIcon:false,outDir:path.join(temp,mode)});
+ const png=fs.readFileSync(result.files[0]),im=await loadImage(png),o=w.Devices.byId(id),dim=w.Devices.dimensions(o,mode==='inner-landscape'?'landscape':'portrait');
+ assert.equal(im.width,dim.W);assert.equal(im.height,dim.H);assert.equal(png[25],2);
+ assert.equal(w.Devices.slotForOutput(id),id,'Duo screenshots must use separate slots');
+ const {project}=await buildProject({template:tpl,addIcon:false});
+ for(const screen of project.screens) {
+  const dev=screen.layers.find(l=>l.type==='device'),box=w.Render.layerBox(dim.W,dim.H,dev);
+  assert(box.x>=0&&box.y>=0&&box.x+box.w<=dim.W&&box.y+box.h<=dim.H,'Duo device must fit entirely');
+ }
 }
 const {project:override}=await buildProject({template:'creative-paper-header',sizes:['apple-search'],addIcon:false});assert.equal(override.sizes[0],'apple-search');
 assert.deepEqual(JSON.parse(JSON.stringify(w.Devices.dimensions(w.Devices.byId('apple-header'),'portrait'))),{W:3840,H:1646});

@@ -434,8 +434,8 @@
   /* ---------- ekran indir ---------- */
   async function downloadScreen(i) {
     const { W, H } = dims(); const c = document.createElement('canvas'); c.width = W; c.height = H;
-    Render.renderScreen(c.getContext('2d', out().creative ? { alpha: false } : undefined), W, H, E.P.screens[i], info(i));
-    const blob = out().creative ? new Blob([await OpaquePNG.encode(c)], { type: 'image/png' }) : await new Promise((r) => c.toBlob(r, 'image/png'));
+    Render.renderScreen(c.getContext('2d', (out().creative || out().opaque) ? { alpha: false } : undefined), W, H, E.P.screens[i], info(i));
+    const blob = (out().creative || out().opaque) ? new Blob([await OpaquePNG.encode(c)], { type: 'image/png' }) : await new Promise((r) => c.toBlob(r, 'image/png'));
     download(blob, `${String(i + 1).padStart(2, '0')}-${slug(Render.textOf((E.P.screens[i].layers.find((L) => L.type === 'text') || {}).text, E.lang, E.P.languages.default))}-${W}x${H}.png`);
   }
   E.renderTo = (canvas, i, W, H, opts) => { canvas.width = W; canvas.height = H; const inf = info(i); if (opts) Object.assign(inf, opts); Render.renderScreen(canvas.getContext('2d'), W, H, E.P.screens[i], inf); };

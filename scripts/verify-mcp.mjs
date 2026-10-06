@@ -1,0 +1,33 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+import {deflateSync} from 'node:zlib';
+import {createRequire} from 'node:module';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const require=createRequire(root+'/mcp/package.json');
+const {createCanvas}=require('@napi-rs/canvas');
+const {Client}=require('@modelcontextprotocol/sdk/client/index.js');
+const {StdioClientTransport}=require('@modelcontextprotocol/sdk/client/stdio.js');
+const {inspectAssets,listOutputs}=await import(root+'/mcp/render-node.mjs');
+const dir=fs.mkdtempSync('/tmp/framegrove-inspect-');
+const c=createCanvas(1398,2034);c.getContext('2d').fillRect(0,0,c.width,c.height);
+fs.writeFileSync(dir+'/rgb.png',await globalThis.OpaquePNG.encode(c,deflateSync));
+fs.writeFileSync(dir+'/rgba.png',c.encodeSync('png'));
+fs.writeFileSync(dir+'/wrong.png',createCanvas(20,30).encodeSync('png'));
+const checks=await inspectAssets(['rgb','rgba','wrong'].map(x=>dir+'/'+x+'.png'),'iphone-duo-outer');
+assert.equal(checks[0].valid,true);assert.equal(checks[1].valid,false);assert.equal(checks[2].valid,false);
+assert.equal(listOutputs().find(x=>x.id==='iphone-duo-inner').slot,'iphone-duo-inner');
+const client=new Client({name:'framegrove-test',version:'1'});
+const transport=new StdioClientTransport({command:process.execPath,args:[root+'/mcp/server.mjs']});
+await client.connect(transport);
+const names=(await client.listTools()).tools.map(x=>x.name);assert.equal(names.length,5);
+const result=await client.callTool({name:'inspect_assets',arguments:{paths:[dir+'/rgb.png'],output:'iphone-duo-outer'}});assert.equal(JSON.parse(result.content[0].text)[0].valid,true);
+const templates=await client.callTool({name:'list_templates',arguments:{}});assert.equal(JSON.parse(templates.content[0].text).length,56);
+await client.close();
+function detect(language,pathname='/',search='',saved=null){const w={location:{pathname,search}};const context=vm.createContext({window:w,navigator:{languages:[language]},localStorage:{getItem:()=>saved},URLSearchParams});vm.runInContext(fs.readFileSync(root+'/engine/i18n.js','utf8'),context);return w.I18N.detect();}
+assert.equal(detect('tr-TR'),'tr');assert.equal(detect('de-DE'),'en');assert.equal(detect('en','/ja/'),'ja');assert.equal(detect('tr','/de/','?lang=fr'),'fr');assert.equal(detect('tr','/','', 'it'),'it');
+console.log(JSON.stringify({mcpTools:names,templates:56,assetInspection:'RGB passes; alpha and wrong dimensions rejected',localeDetection:'5 cases pass'}));
+
+fs.rmSync(dir,{recursive:true,force:true});

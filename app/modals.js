@@ -201,10 +201,10 @@
           for (const sid of selS) { const o = Devices.byId(sid); const { W, H } = dimsOf(o);
             for (const l of selL) { for (let i = 0; i < p.screens.length; i++) {
               const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
-              const context = cv.getContext('2d', o.creative ? { alpha: false } : undefined);
+              const context = cv.getContext('2d', (o.creative || o.opaque) ? { alpha: false } : undefined);
               Render.renderScreen(context, W, H, p.screens[i], { lang: l, defaultLang: p.languages.default, imageFor: Store.imageFor, shotSlot: Devices.slotForOutput(sid), pan: p.screens[i].bg && p.screens[i].bg.panorama ? { i, n: p.screens.length } : null, project: p });
               const exportFmt = o.pngOnly ? 'png' : fmt;
-              const blob = o.creative && exportFmt !== 'jpeg' ? new Blob([await OpaquePNG.encode(cv)], { type: 'image/png' }) : await new Promise((r) => cv.toBlob(r, exportFmt === 'jpeg' ? 'image/jpeg' : 'image/png', 0.92));
+              const blob = (o.creative || o.opaque) && exportFmt !== 'jpeg' ? new Blob([await OpaquePNG.encode(cv)], { type: 'image/png' }) : await new Promise((r) => cv.toBlob(r, exportFmt === 'jpeg' ? 'image/jpeg' : 'image/png', 0.92));
               if (!blob) throw new Error('Image export failed');
               const title = Render.textOf((p.screens[i].layers.find((L) => L.type === 'text') || {}).text, l, p.languages.default);
               files.push({ name: `${l}/${sid}_${W}x${H}/${String(i + 1).padStart(2, '0')}-${slug(title)}.${exportFmt === 'jpeg' ? 'jpg' : 'png'}`, data: new Uint8Array(await blob.arrayBuffer()) });
@@ -333,7 +333,7 @@ Return ONLY JSON: {"translations":{"<lang>":{"<id>":"<text>"}}} with every langu
             <div class="row2"><div class="field"><label>${t('Tone')}</label><select id="qTone"><option value="benefit-led, calm confidence">${t('Benefit-led')}</option><option value="playful and warm">${t('Playful')}</option><option value="minimal, premium, understated">${t('Premium')}</option><option value="short imperatives">${t('Direct')}</option></select></div>
             <div class="field"><label>${t('Default language')}</label><select id="qLang"></select></div></div>
             <div class="field"><label>${t('Also translate to')}</label><div class="langchips" id="qLangs"></div></div>
-            <label class="check" style="margin-bottom:10px"><input type="checkbox" id="qIcon" ${p.sizes.some(id => Devices.byId(id)?.creative) ? '' : 'checked'}><span>${t('Show app icon + name on the first screen')}</span> <button class="btn sm" id="qIconBtn" type="button">⇪ ${t('Upload icon')}</button></label>
+            <label class="check" style="margin-bottom:10px"><input type="checkbox" id="qIcon" ${p.sizes.some(id => (Devices.byId(id)?.creative || id.startsWith('iphone-duo'))) ? '' : 'checked'}><span>${t('Show app icon + name on the first screen')}</span> <button class="btn sm" id="qIconBtn" type="button">⇪ ${t('Upload icon')}</button></label>
           </div>
           <div>
             <div class="field"><label>${t('Screenshots')} <span class="hint">(${t('in order, file names sort them')})</span></label>

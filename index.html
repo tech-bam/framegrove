@@ -1,280 +1,39 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Free App Store Creative Assets Generator — Framegrove</title>
-<meta name="description" content="Create App Store and Google Play screenshots in minutes. Create Apple Header and Search creative assets, or start from curated screenshot templates, localize into any language, export every required iOS and Android size. Runs in your browser.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="fonts.css?v=1791244900">
-<link rel="stylesheet" href="site.css?v=1791244900">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2312856f'/><text x='50' y='68' font-size='54' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='700'>F</text></svg>">
-<style>
-  .hero { background: radial-gradient(1200px 600px at 50% -10%, #145f52 0%, #0f2a2c 55%, #0f1a1f 100%); color: #fff; text-align: center; padding: 84px 0 70px; }
-  .hero .pill { display: inline-block; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18); border-radius: 20px; padding: 6px 14px; font-size: 12.5px; margin-bottom: 22px; }
-  .hero h1 { font-size: clamp(38px, 6vw, 68px); line-height: 1.02; letter-spacing: -.035em; font-weight: 800; max-width: 900px; margin: 0 auto 18px; }
-  .hero h1 em { font-style: normal; color: #7fe3c6; }
-  .hero p { color: rgba(255,255,255,.78); font-size: 17px; max-width: 640px; margin: 0 auto 28px; line-height: 1.55; }
-  .hero .cta { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-  .hero .cta .btn.ghost { background: transparent; color: #fff; border-color: rgba(255,255,255,.3); }
-  .stats { display: flex; justify-content: center; gap: 44px; margin-top: 44px; flex-wrap: wrap; }
-  .stats b { display: block; font-size: 28px; letter-spacing: -.02em; }
-  .stats span { color: rgba(255,255,255,.6); font-size: 12.5px; }
-  .heroStrip { margin: 40px auto 0; max-width: 1100px; padding: 0 24px; }
-  .heroStrip canvas { width: 100%; border-radius: 14px; display: block; box-shadow: var(--shadow-lg); }
-  section.block { padding: 70px 0; }
-  section.block.alt { background: var(--surface); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-  .block h2 { font-size: clamp(26px, 3.4vw, 40px); letter-spacing: -.025em; margin-bottom: 12px; text-align: center; }
-  .block h2 em { font-style: normal; color: var(--brand); }
-  .block .lede { color: var(--muted); font-size: 16px; text-align: center; max-width: 720px; margin: 0 auto 36px; line-height: 1.6; }
-  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
-  .step { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px; box-shadow: var(--shadow); }
-  .step .n { width: 30px; height: 30px; border-radius: 50%; background: var(--brand); color: #fff; display: grid; place-items: center; font-weight: 700; margin-bottom: 12px; }
-  .step h3 { font-size: 16px; margin-bottom: 6px; }
-  .step p { color: var(--muted); font-size: 13.5px; }
-  .feat { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
-  .feat h2 { text-align: left; }
-  .feat .lede { text-align: left; margin: 0 0 16px; }
-  .feat ul { color: var(--muted); line-height: 1.9; padding-left: 20px; }
-  .feat canvas, .feat .art { width: 100%; border-radius: 14px; box-shadow: var(--shadow-lg); display: block; }
-  .langs { display: flex; flex-wrap: wrap; gap: 6px; }
-  .langs span { background: var(--surface-2); border: 1px solid var(--line); border-radius: 8px; padding: 5px 9px; font-size: 12.5px; }
-  .pricing { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; max-width: 980px; margin: 0 auto; }
-  .plan { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 24px; box-shadow: var(--shadow); position: relative; }
-  
-  .plan .badge { position: absolute; top: -12px; left: 24px; background: var(--brand); color: #fff; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 12px; }
-  .plan h3 { font-size: 20px; margin-bottom: 4px; }
-  .plan .price { font-size: 34px; font-weight: 800; letter-spacing: -.02em; margin: 8px 0 2px; }
-  .plan .price small { font-size: 13px; color: var(--muted); font-weight: 500; }
-  .plan .note { color: var(--muted); font-size: 12.5px; margin-bottom: 14px; }
-  .plan ul { padding-left: 18px; color: var(--muted); line-height: 1.9; margin-bottom: 18px; font-size: 13.5px; }
-  .faq { max-width: 820px; margin: 0 auto; }
-  .faq details { border-bottom: 1px solid var(--line); padding: 14px 0; }
-  .faq summary { cursor: pointer; font-weight: 700; }
-  .faq p { color: var(--muted); margin-top: 8px; line-height: 1.6; }
-  @media (max-width: 860px) { .feat { grid-template-columns: 1fr; } .feat h2, .feat .lede { text-align: center; } }
-
-.hero { background:#f2efe7; color:#1d302b; padding:64px 0 48px; }
-.hero h1 { font-family:Georgia,serif; font-weight:400; font-size:clamp(46px,7vw,82px); letter-spacing:-.055em; }
-.hero h1 em { color:#357c61; }
-.hero p { color:#53645b; }
-.hero .pill { color:#236b50; background:#e1e9d9; border-color:#cfdbc4; }
-.hero .cta .btn.ghost { color:#263d33; border-color:#a5b4a9; }
-.stats span { color:#617066; }.stats b { font-size:25px; }
-.creative-block { background:#162924; color:#f6f4e9; }
-.creative-block .lede { color:#b9ccc2; }.creative-block h2 { font-family:Georgia,serif; font-weight:400; font-size:clamp(36px,4.5vw,56px); }
-.new-label { display:block; text-align:center; color:#c1df94; font-size:12px; letter-spacing:.06em; margin-bottom:20px; }
-.creative-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; align-items:start; }
-.creative-card { display:block; background:#213a32; border:1px solid #3c5448; border-radius:16px; padding:14px; color:inherit; text-decoration:none; transition:transform .2s; }
-.creative-card:hover { transform:translateY(-4px); }.creative-card canvas { width:100%; display:block; border-radius:8px; }
-.creative-card h3 { font-size:16px; margin:18px 0 6px; }.creative-card p { font-size:12px; color:#b9ccc2; }
-.creative-actions { display:flex; justify-content:center; align-items:center; gap:24px; flex-wrap:wrap; margin-top:32px; }.creative-actions>a:last-child { color:#c6ddbc; font-size:13px; }
-.creative-note { max-width:720px; text-align:center; margin:24px auto 0; font-size:12px; color:#b9ccc2; line-height:1.6; }
-.launch-path { display:flex; justify-content:center; gap:12px; flex-wrap:wrap; }.launch-path span { padding:14px 22px; border:1px solid var(--line); border-radius:30px; font-size:13px; }
-@media(max-width:760px) { .creative-grid { grid-template-columns:1fr; }.creative-card { max-width:520px; width:100%; margin:auto; }.hero { padding-top:44px; }.stats { gap:22px; } }
-
-</style>
-
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Free App Store Creative Assets & iPhone Duo Screenshots — Framegrove</title>
+<meta name="description" content="Make your app impossible to scroll past. Free App Store Creative Assets, iPhone Duo screenshot templates and a local-first editor. No signup, no watermark.">
 <link rel="canonical" href="https://framegrove.bamstudio.dev/">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Framegrove — Free App Store Creative Assets Generator">
-<meta property="og:description" content="Your App Store page has a new billboard. Design Header and Search creative assets, plus store screenshots. Free, no signup.">
-<meta property="og:url" content="https://framegrove.bamstudio.dev/">
-<meta name="twitter:card" content="summary">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Framegrove", "url": "https://framegrove.bamstudio.dev", "applicationCategory": "DesignApplication", "operatingSystem": "Web browser", "description": "Free App Store Creative Assets and screenshot generator with editable templates and local projects.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
-</head>
-<body>
-<header id="nav"></header>
-
-<section class="hero">
-  <div class="container">
-    <span class="pill" data-t>Built for the new App Store</span>
-    <h1><span data-t>Your App Store page.</span><br><em data-t>A new billboard.</em></h1>
-    <p data-t>Apple added new spaces for your app: product page headers and search creative assets. Make them yours with editable templates, real screenshots and exact-size exports. Free. No signup.</p>
-    <div class="cta"><a class="btn primary lg" href="templates/#/creative" data-t>Make a creative asset</a><a class="btn ghost lg" href="app/#/sandbox" data-t>Try the editor →</a></div>
-    <div class="stats"><div><b id="stTpl">44</b><span data-t>templates</span></div><div><b id="stSizes">24</b><span data-t>store sizes</span></div><div><b id="stLangs">34</b><span data-t>languages</span></div><div><b>100%</b><span data-t>in your browser</span></div></div>
-  </div>
-  <div class="heroStrip"><canvas id="heroCanvas"></canvas></div>
-</section>
-
-<section class="block creative-block" id="creative-assets">
- <div class="container">
-  <div class="creative-heading"><span class="new-label" data-t>Apple Creative Assets · Now in the editor</span><h2 data-t>Go beyond screenshots.</h2><p class="lede" data-t>Design a product page header, stand out in search, or create one universal asset for both. Dedicated landscape layouts, exact Apple sizes, editable text and your real app screens.</p></div>
-  <div class="creative-grid">
-   <a class="creative-card" href="templates/#/t/creative-paper-header"><canvas id="assetHeader" aria-label="Product page header example"></canvas><h3 data-t>Product page header</h3><p>21:9 · 3840 × 1646 · PNG</p></a>
-   <a class="creative-card" href="templates/#/t/creative-midnight-search"><canvas id="assetSearch" aria-label="Search result creative asset example"></canvas><h3 data-t>Search results</h3><p>3:2 · 3840 × 2560 · PNG / JPG</p></a>
-   <a class="creative-card" href="templates/#/t/creative-lime-universal"><canvas id="assetUniversal" aria-label="Universal creative asset example"></canvas><h3 data-t>One asset, both placements</h3><p>16:9 · 5244 × 2950 · PNG</p></a>
-  </div>
-  <div class="creative-actions"><a class="btn primary lg" href="templates/#/creative" data-t>Explore creative templates →</a><a href="https://developer.apple.com/help/app-store-connect/reference/app-information/creative-assets-specifications" target="_blank" rel="noopener" data-t>Apple specifications ↗</a><a href="creative-assets/">Creative Assets guide →</a></div>
-  <p class="creative-note" data-t>Preview in App Store Connect before submission. Apple may crop assets across devices and orientations. These are static image assets, separate from app preview videos.</p>
- </div>
-</section>
-<section class="block launch-kit"><div class="container"><h2 data-t>A complete launch kit. One editor.</h2><p class="lede" data-t>Pick a story for your screenshots. Match the brand in Header and Search. Export each placement in its own project, with every language in one zip.</p><div class="launch-path"><span>01 / Screenshots</span><span>02 / Header</span><span>03 / Search</span><span>04 / Export</span></div></div></section>
-
-<section class="block" id="how">
-  <div class="container">
-    <h2><span data-t>Create App Store and Play Store screenshots in</span> <em data-t>minutes, not hours</em></h2>
-    <p class="lede" data-t>Pick a style, drop in your screens, and get a complete set of store-ready screenshots in minutes. One responsive layout adapts to every iOS and Android size and every language.</p>
-    <div class="steps">
-      <div class="step"><div class="n">1</div><h3 data-t>Start with a template</h3><p data-t>Pick a professional layout for App Store and Google Play, or start from a blank canvas.</p></div>
-      <div class="step"><div class="n">2</div><h3 data-t>Add your screens</h3><p data-t>Bulk import raw screenshots. Per-device slots keep iPhone, iPad and Android crisp.</p></div>
-      <div class="step"><div class="n">3</div><h3 data-t>Customize on the canvas</h3><p data-t>Drag layers, edit captions, device frames, backgrounds, badges and shapes. Exact dimensions when you need them.</p></div>
-      <div class="step"><div class="n">4</div><h3 data-t>Captions with AI (optional)</h3><p data-t>Draft benefit-led captions from a short description, then edit anything.</p></div>
-      <div class="step"><div class="n">5</div><h3 data-t>Localize</h3><p data-t>Translate once, export every language from the same project. RTL-aware layouts.</p></div>
-      <div class="step"><div class="n">6</div><h3 data-t>Export every size</h3><p data-t>One zip, organised by language and device size, ready for App Store Connect and Play Console.</p></div>
-    </div>
-  </div>
-</section>
-
-<section class="block alt" id="templates">
-  <div class="container feat">
-    <div>
-      <h2><span data-t>Start with an</span> <em data-t>App Store Screenshot Template</em></h2>
-      <p class="lede" data-t>A rebuilt collection: editorial typography, readable screenshots, distinct compositions and matching Header / Search assets. Every layer is editable.</p>
-      <a class="btn primary" href="templates/" data-t>Explore all templates →</a>
-    </div>
-    <canvas id="tplCanvas"></canvas>
-  </div>
-</section>
-
-<section class="block" id="customize">
-  <div class="container feat">
-    <canvas id="custCanvas"></canvas>
-    <div>
-      <h2><em data-t>Customize</em> <span data-t>your screenshots</span></h2>
-      <p class="lede" data-t>Start with a template or blank canvas, then customize screenshots, device frames, text, badges, shapes, fonts and backgrounds directly on the canvas.</p>
-      <ul>
-        <li data-t>Real device frames: iPhone, iPad, Android, Watch, browser</li>
-        <li data-t>Rich captions with highlighted words, boxes, decorations</li>
-        <li data-t>Badges: ratings, laurels, chips, notifications, app icon</li>
-        <li data-t>Panoramic backgrounds that flow across the whole set</li>
-        <li data-t>Drag & drop, nudge with arrows, exact dimensions</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<section class="block alt" id="localize">
-  <div class="container feat">
-    <div>
-      <h2><span data-t>Localize screenshots in</span> <em data-t>34 languages</em></h2>
-      <p class="lede" data-t>Captions are stored per language. Translate with AI in seconds, fine-tune each language, export every locale from one project.</p>
-      <div class="langs" id="langs"></div>
-    </div>
-    <canvas id="locCanvas"></canvas>
-  </div>
-</section>
-
-<section class="block" id="sizes">
-  <div class="container">
-    <h2><span data-t>Every size the stores ask for</span></h2>
-    <p class="lede" data-t>iPhone 6.9" / 6.7" / 6.5" / 5.5", iPad 13" / 12.9" / 11", Apple Watch, Mac, Android phones and tablets, Play feature graphic, Wear OS, plus Amazon, Huawei and Microsoft stores.</p>
-    <div class="steps" id="sizeGrid"></div>
-  </div>
-</section>
-
-<section class="block alt" id="free">
-  <div class="container">
-    <h2><span data-t>Free, private and</span> <em data-t>built for automation</em></h2>
-    <p class="lede" data-t>No account, no upload, no subscription. Projects live in your browser; the AI features use your own key; an MCP server lets your coding agent render a full set without opening the editor.</p>
-    <div class="steps">
-      <div class="step"><div class="n">🔒</div><h3 data-t>Everything stays on your device</h3><p data-t>Screenshots never leave the browser. Export a single project file to move between machines.</p></div>
-      <div class="step"><div class="n">✨</div><h3 data-t>AI that works for you</h3><p data-t>Describe the app once: captions in every language, tone of voice, highlighted words. Bring your own Anthropic key.</p></div>
-      <div class="step"><div class="n">⌘</div><h3 data-t>MCP server & CLI</h3><p data-t>Claude Code or any MCP client can take simulator screenshots and render every store size as PNG — same templates, same engine.</p></div>
-    </div>
-  </div>
-</section>
-
-<section class="block alt" id="pricing"><div class="container"><h2 data-t>Free to create. Yours to launch.</h2><p class="lede" data-t>Every template, the full editor and exports are free. No account, no watermark. If Framegrove saves you an afternoon, help keep it growing.</p><div class="pricing"><div class="plan"><h3 data-t>Free editor</h3><div class="price">$0</div><p class="note" data-t>Creative Assets · screenshots · local projects · PNG / ZIP exports</p><a class="btn primary" href="templates/#/creative" data-t>Start creating</a></div><div class="plan"><h3 data-t>Keep the coffee flowing</h3><div class="price">☕</div><p class="note" data-t>Optional support. Every contribution helps us build more templates and improve the editor.</p><a class="btn primary" href="https://buymeacoffee.com/bamstudio" target="_blank" rel="noopener" data-t>Buy me a coffee ↗</a></div></div></div></section>
-<section class="block" id="faq">
-  <div class="container faq">
-    <h2 data-t>Frequently asked questions</h2>
-    <details><summary data-t>Is it really free?</summary><p data-t>Yes. The editor, templates and exports run entirely in your browser. Nothing is uploaded; projects are stored on your device and can be exported as a file.</p></details>
-    <details><summary data-t>Which sizes are included?</summary><p data-t>All current App Store Connect sizes (6.9", 6.7", 6.5", 6.3", 6.1", 5.5", iPad 13"/12.9"/11", Watch, Mac, Vision Pro) and Google Play sizes (phones, tablets, feature graphic, Wear OS), plus Amazon, Huawei and Microsoft presets.</p></details>
-    <details><summary data-t>Can I design once and export for every device?</summary><p data-t>Yes. Layouts are responsive: positions are relative to the canvas, so one design adapts across aspect ratios. Each device family can also have its own raw screenshot.</p></details>
-    <details><summary data-t>How does the AI work?</summary><p data-t>The AI panel in the editor writes captions from a short description and translates them into every project language. It calls Anthropic directly with your own API key, which is sent directly to Anthropic for authentication. Without a key, copy the prompt and paste the answer.</p></details>
-    <details><summary data-t>Can an AI agent generate my screenshots?</summary><p data-t>Yes — the MCP server and CLI use the same rendering engine in Node, so Claude Code or any MCP client can render a full set to PNG files. See the MCP page.</p></details>
-    <details><summary data-t>Do I need Figma or Photoshop?</summary><p data-t>No. Everything happens in the canvas editor. Exact Dimensions gives pixel-level control when you need it.</p></details>
-  </div>
-</section>
-
-<footer id="footer"></footer>
-
-<script src="engine/i18n.js?v=1791244900"></script>
-<script src="engine/frames.js?v=1791244900"></script>
-<script src="engine/devices.js?v=1791244900"></script>
-<script src="engine/render.js?v=1791244900"></script>
-<script src="engine/model.js?v=1791244900"></script>
-<script src="engine/store.js?v=1791244900"></script>
-<script src="engine/tpl-dsl.js?v=1791244900"></script>
-<script src="engine/templates/index.js?v=1791244900"></script>
-<script src="common.js?v=1791244900"></script>
-<script>
-(function () {
-  const { $, renderNav, renderFooter, mockShot } = window.UI;
-  window.I18N.extend({
-    'App Store': 'App Store', 'Screenshot': 'Ekran Görüntüsü', 'Generator': 'Üretici', 'Browse templates →': 'Şablonlara göz at →', 'templates': 'şablon', 'store sizes': 'mağaza boyutu', 'languages': 'dil', 'in your browser': 'tarayıcında',
-    'Create App Store and Play Store screenshots in': 'App Store ve Play Store ekran görüntülerini', 'minutes, not hours': 'saatler değil dakikalar içinde oluştur',
-    'Pick a style, drop in your screens, and get a complete set of store-ready screenshots in minutes. One responsive layout adapts to every iOS and Android size and every language.': 'Bir stil seç, ekranlarını bırak, dakikalar içinde mağazaya hazır tam set al. Tek duyarlı düzen her iOS/Android boyutuna ve her dile uyar.',
-    'Start with a template': 'Şablonla başla', 'Pick a professional layout for App Store and Google Play, or start from a blank canvas.': 'App Store ve Google Play için profesyonel bir düzen seç ya da boş tuvalle başla.',
-    'Add your screens': 'Ekranlarını ekle', 'Bulk import raw screenshots. Per-device slots keep iPhone, iPad and Android crisp.': 'Ham ekran görüntülerini toplu yükle. Cihaz başına yuvalar iPhone, iPad ve Android\'i net tutar.',
-    'Customize on the canvas': 'Tuvalde özelleştir', 'Drag layers, edit captions, device frames, backgrounds, badges and shapes. Exact dimensions when you need them.': 'Katmanları sürükle; başlıkları, cihaz çerçevelerini, arka planları, rozetleri ve şekilleri düzenle. Gerekince tam ölçü.',
-    'Captions with AI (optional)': 'AI ile başlıklar (isteğe bağlı)', 'Draft benefit-led captions from a short description, then edit anything.': 'Kısa bir açıklamadan fayda odaklı başlıklar taslağı al, sonra istediğini düzenle.',
-    'Localize': 'Yerelleştir', 'Translate once, export every language from the same project. RTL-aware layouts.': 'Bir kez çevir, aynı projeden her dili dışa aktar. RTL uyumlu düzenler.',
-    'Export every size': 'Her boyutu dışa aktar', 'One zip, organised by language and device size, ready for App Store Connect and Play Console.': 'Dil ve cihaz boyutuna göre klasörlenmiş tek zip; App Store Connect ve Play Console\'a hazır.',
-    'Start with an': 'Bir', 'App Store Screenshot Template': 'App Store ekran görüntüsü şablonuyla başla',
-    'A rebuilt collection: editorial typography, readable screenshots, distinct compositions and matching Header / Search assets. Every layer is editable.': 'Yeniden tasarlanmış koleksiyon: güçlü tipografi, okunaklı ekranlar, farklı kompozisyonlar ve uyumlu Header / Search görselleri. Her katman düzenlenebilir.',
-    'Explore all templates →': 'Tüm şablonları gör →', 'Customize': 'Özelleştir', 'your screenshots': 'ekran görüntülerini',
-    'Start with a template or blank canvas, then customize screenshots, device frames, text, badges, shapes, fonts and backgrounds directly on the canvas.': 'Şablonla ya da boş tuvalle başla; ekran görüntülerini, cihaz çerçevelerini, metni, rozetleri, şekilleri, fontları ve arka planları doğrudan tuvalde özelleştir.',
-    'Real device frames: iPhone, iPad, Android, Watch, browser': 'Gerçek cihaz çerçeveleri: iPhone, iPad, Android, Watch, tarayıcı', 'Rich captions with highlighted words, boxes, decorations': 'Vurgulu kelime, kutu ve süslerle zengin başlıklar', 'Badges: ratings, laurels, chips, notifications, app icon': 'Rozetler: puan, laurel, çip, bildirim, uygulama ikonu', 'Panoramic backgrounds that flow across the whole set': 'Set boyunca akan panoramik arka planlar', 'Drag & drop, nudge with arrows, exact dimensions': 'Sürükle-bırak, ok tuşlarıyla kaydır, tam ölçüler',
-    'Localize screenshots in': 'Ekran görüntülerini', '34 languages': '34 dilde yerelleştir', 'Captions are stored per language. Translate with AI in seconds, fine-tune each language, export every locale from one project.': 'Başlıklar dil başına saklanır. AI ile saniyeler içinde çevir, her dili ince ayarla, tek projeden her yereli dışa aktar.',
-    'Every size the stores ask for': 'Mağazaların istediği her boyut', 'iPhone 6.9" / 6.7" / 6.5" / 5.5", iPad 13" / 12.9" / 11", Apple Watch, Mac, Android phones and tablets, Play feature graphic, Wear OS, plus Amazon, Huawei and Microsoft stores.': 'iPhone 6.9" / 6.7" / 6.5" / 5.5", iPad 13" / 12.9" / 11", Apple Watch, Mac, Android telefon ve tabletler, Play öne çıkan görsel, Wear OS, ayrıca Amazon, Huawei ve Microsoft mağazaları.',
-    'Free, private and': 'Ücretsiz, gizli ve', 'built for automation': 'otomasyon için kuruldu', 'No account, no upload, no subscription. Projects live in your browser; the AI features use your own key; an MCP server lets your coding agent render a full set without opening the editor.': 'Hesap yok, yükleme yok, abonelik yok. Projeler tarayıcında yaşar; AI özellikleri kendi anahtarını kullanır; MCP sunucusu kodlama ajanının editörü açmadan tam set üretmesini sağlar.', 'Everything stays on your device': 'Her şey cihazında kalır', 'Screenshots never leave the browser. Export a single project file to move between machines.': 'Ekran görüntüleri tarayıcıdan çıkmaz. Makineler arası taşımak için tek proje dosyası dışa aktar.', 'AI that works for you': 'Senin için çalışan AI', 'Describe the app once: captions in every language, tone of voice, highlighted words. Bring your own Anthropic key.': 'Uygulamayı bir kez anlat: her dilde başlık, ton, vurgulu kelimeler. Kendi Anthropic anahtarınla.', 'MCP server & CLI': 'MCP sunucusu ve CLI', 'Claude Code or any MCP client can take simulator screenshots and render every store size as PNG — same templates, same engine.': 'Claude Code ya da herhangi bir MCP istemcisi simülatör ekranlarını alıp her mağaza boyutunu PNG olarak üretir — aynı şablonlar, aynı motor.', 'Free · runs in your browser · no account': 'Ücretsiz · tarayıcında çalışır · hesap yok', 'Screenshots your app': 'Uygulamanın hak ettiği', 'deserves': 'ekran görüntüleri', 'Apple added new spaces for your app: product page headers and search creative assets. Make them yours with editable templates, real screenshots and exact-size exports. Free. No signup.': 'Bir şablon seç, ekranlarını bırak, AI her dilde başlıkları yazsın, tüm iOS ve Android boyutlarını tek zip olarak al. Ekran görüntüleri cihazında kalır. İsteğe bağlı AI, açıklama ve metinleri seçtiğin sağlayıcıya gönderir.', 'Pick a template': 'Şablon seç', 'Try the editor →': 'Editörü dene →', 'Yes. The editor, templates and exports run entirely in your browser. Nothing is uploaded; projects are stored on your device and can be exported as a file.': 'Evet. Editör, şablonlar ve dışa aktarma tamamen tarayıcında çalışır. Hiçbir şey yüklenmez; projeler cihazında saklanır ve dosya olarak dışa aktarılabilir.', 'Start free. Everything runs in your browser today; accounts, sync and direct store upload arrive with Pro.': 'Ücretsiz başla. Bugün her şey tarayıcında çalışır; hesap, senkron ve mağazaya doğrudan yükleme Pro ile geliyor.',
-    'For your own app. No card required.': 'Kendi uygulaman için. Kart gerekmez.', 'Essential iOS & Android sizes': 'Temel iOS ve Android boyutları', 'Up to 5 screenshots per project': 'Proje başına 5 ekran görüntüsü', 'Starter templates': 'Başlangıç şablonları', 'Projects stay in your browser': 'Projeler tarayıcında kalır', 'Start free': 'Ücretsiz başla',
-    'MOST POPULAR': 'EN POPÜLER', '/ month, billed yearly': '/ ay, yıllık ödeme', 'Coming soon — join the list.': 'Yakında — listeye katıl.', 'All iOS & Android device sizes': 'Tüm iOS ve Android boyutları', 'Translate & localize up to 10 languages': '10 dile kadar çeviri ve yerelleştirme', '160+ Pro templates, 10 projects': '160+ Pro şablon, 10 proje', 'AI captions & translations included': 'AI başlık ve çeviri dahil', 'Cloud sync & direct store upload': 'Bulut senkron ve mağazaya doğrudan yükleme', 'Notify me': 'Haber ver',
-    'For agencies & client work.': 'Ajanslar ve müşteri işleri için.', 'Everything in Pro': 'Pro\'daki her şey', 'Unlimited projects, 25 screenshots each': 'Sınırsız proje, her biri 25 ekran görüntüsü', 'All languages incl. RTL': 'RTL dahil tüm diller', 'MCP & CLI automation': 'MCP ve CLI otomasyonu', 'Talk to us': 'Bize yaz',
-    'Frequently asked questions': 'Sık sorulan sorular', 'Is it really free?': 'Gerçekten ücretsiz mi?', 'Yes. The editor, templates and exports run entirely in your browser today. Nothing is uploaded; projects are stored on your device. There is no paid plan or cloud account yet.': 'Evet. Editör, şablonlar ve dışa aktarma bugün tamamen tarayıcında çalışır. Hiçbir şey yüklenmez; projeler cihazında saklanır. Henüz ücretli plan veya bulut hesabı yok.',
-    'Which sizes are included?': 'Hangi boyutlar var?', 'All current App Store Connect sizes (6.9", 6.7", 6.5", 6.3", 6.1", 5.5", iPad 13"/12.9"/11", Watch, Mac, Vision Pro) and Google Play sizes (phones, tablets, feature graphic, Wear OS), plus Amazon, Huawei and Microsoft presets.': 'Güncel tüm App Store Connect boyutları (6.9", 6.7", 6.5", 6.3", 6.1", 5.5", iPad 13"/12.9"/11", Watch, Mac, Vision Pro) ve Google Play boyutları (telefon, tablet, öne çıkan görsel, Wear OS), ayrıca Amazon, Huawei ve Microsoft ön ayarları.',
-    'Can I design once and export for every device?': 'Bir kez tasarlayıp her cihaza aktarabilir miyim?', 'Yes. Layouts are responsive: positions are relative to the canvas, so one design adapts across aspect ratios. Each device family can also have its own raw screenshot.': 'Evet. Düzenler duyarlıdır: konumlar tuvale görelidir, tek tasarım en-boy oranlarına uyar. Her cihaz ailesine ayrı ham ekran görüntüsü de verilebilir.',
-    'How does the AI work?': 'AI nasıl çalışıyor?', 'The AI panel in the editor writes captions from a short description and translates them into every project language. It calls Anthropic directly with your own API key, which is sent directly to Anthropic for authentication. Without a key, copy the prompt and paste the answer.': 'Editördeki AI paneli kısa bir açıklamadan başlık yazar ve tüm proje dillerine çevirir. Kendi Anthropic anahtarınla doğrudan Anthropic\'i çağırır; anahtar kimlik doğrulama için doğrudan Anthropic’e gönderilir. Anahtar yoksa prompt\'u kopyalayıp cevabı yapıştır.',
-    'Can an AI agent generate my screenshots?': 'Bir AI ajanı görsellerimi üretebilir mi?', 'Yes — the MCP server and CLI use the same rendering engine in Node, so Claude Code or any MCP client can render a full set to PNG files. See the MCP page.': 'Evet — MCP sunucusu ve CLI aynı motoru Node\'da kullanır; Claude Code ya da herhangi bir MCP istemcisi tam seti PNG olarak üretebilir. MCP sayfasına bak.',
-    'Do I need Figma or Photoshop?': 'Figma ya da Photoshop gerekir mi?', 'No. Everything happens in the canvas editor. Exact Dimensions gives pixel-level control when you need it.': 'Hayır. Her şey tuval editöründe olur. Tam ölçüler gerektiğinde piksel düzeyinde kontrol verir.',
-  });
-  window.I18N.extend({"Screenshots. Creative assets. Ready to launch.": "Ekran görüntüleri. Creative assets. Yayına hazır.", "Built for the new App Store": "Yeni App Store için hazır", "Apple Creative Assets · Now in the editor": "Apple Creative Assets · Artık editörde", "Go beyond screenshots.": "Ekran görüntülerinin ötesine geç.", "Design a product page header, stand out in search, or create one universal asset for both. Dedicated landscape layouts, exact Apple sizes, editable text and your real app screens.": "Ürün sayfası başlığı tasarla, arama sonuçlarında dikkat çek veya ikisi için ortak bir görsel oluştur. Özel yatay düzenler, tam Apple ölçüleri, düzenlenebilir metinler ve gerçek uygulama ekranların.", "Explore creative templates →": "Creative şablonları keşfet →", "Product page header": "Ürün sayfası başlığı", "Search results": "Arama sonuçları", "One asset, both placements": "Tek görsel, iki alan", "Preview in App Store Connect before submission. Apple may crop assets across devices and orientations. These are static image assets, separate from app preview videos.": "Göndermeden önce App Store Connect’te önizle. Apple cihaz ve yöne göre görselleri kırpabilir. Bunlar statik görsellerdir; app preview videolarından ayrı hazırlanır.", "Apple specifications ↗": "Apple ölçü kuralları ↗", "A complete launch kit. One editor.": "Tam bir yayın seti. Tek editör.", "Pick a story for your screenshots. Match the brand in Header and Search. Export each placement in its own project, with every language in one zip.": "Ekran görüntülerinde hikâyeni anlat. Header ve Search alanlarında aynı markayı sürdür. Her alanı kendi projesinden, tüm dilleri tek ZIP içinde dışa aktar.", "Local projects · editable layers · PNG / ZIP exports": "Yerel projeler · düzenlenebilir katmanlar · PNG / ZIP çıktıları", "Optional support": "İsteğe bağlı destek", "Explore the free collection": "Ücretsiz koleksiyonu keşfet"});
-  window.I18N.extend({"Built for the new App Store":"Yeni App Store için hazır","Your App Store page.":"App Store sayfan.","A new billboard.":"Yeni bir vitrin.","Make a creative asset":"Creative asset oluştur","Free to create. Yours to launch.":"Ücretsiz tasarla. Yayına hazırla.","Every template, the full editor and exports are free. No account, no watermark. If Framegrove saves you an afternoon, help keep it growing.":"Tüm şablonlar, editör ve çıktılar ücretsiz. Hesap yok, filigran yok. Framegrove zaman kazandırıyorsa gelişmesine destek ol.","Keep the coffee flowing":"Bir kahveyle destek ol","Buy me a coffee ↗":"Bir kahve ısmarla ↗","Start creating":"Tasarlamaya başla","Optional support. Every contribution helps us build more templates and improve the editor.":"İsteğe bağlı destek. Her katkı yeni şablonlar ve daha iyi bir editör için yardımcı olur.","Apple added new spaces for your app: product page headers and search creative assets. Make them yours with editable templates, real screenshots and exact-size exports. Free. No signup.":"Apple uygulaman için yeni alanlar açtı: ürün sayfası başlıkları ve arama creative assets görselleri. Düzenlenebilir şablonlar, gerçek ekranlar ve tam ölçülü çıktılarla kendi vitrinini oluştur. Ücretsiz. Üyelik yok."});
-  window.I18N.set(window.I18N.detect());
-  renderNav(''); renderFooter();
-  const TPL = (window.TEMPLATES || []).filter((x) => !x.archived); const mock = mockShot();
-  const RATIO = window.Devices.BASE.h / window.Devices.BASE.w;
-  const byKey = (k) => TPL.find((x) => x.key === k);
-  $('#stTpl').textContent = TPL.length; $('#stSizes').textContent=Devices.OUTPUTS.length; $('#stLangs').textContent=Object.keys(Model.LANG_NAMES).length;
-  function strip(id, keys, w, first) {
-    const c = $('#' + id); if (!c) return;
-    const picks = keys.map(byKey).filter(Boolean);
-    const h = Math.round(w * RATIO), gap = 10; c.width = picks.length * w + (picks.length - 1) * gap; c.height = h;
-    const ctx = c.getContext('2d');
-    picks.forEach((tpl, i) => { const s = tpl.screens[first ? 0 : Math.min(i, tpl.screens.length - 1)]; const tmp = document.createElement('canvas'); tmp.width = w; tmp.height = h; window.Render.renderScreen(tmp.getContext('2d'), w, h, s, { lang: window.I18N.lang, defaultLang: 'en', imageFor: () => mock, shotSlot: 'iphone', pan: null, project: { background: tpl.background || s.bg, app: {}, languages: { default: 'en' } } }); ctx.drawImage(tmp, i * (w + gap), 0); });
-  }
-  function all() {
-    const hero=$('#heroCanvas'), tpl=byKey('creative-paper-header'), out=Devices.byId('apple-header');
-    hero.width=1400;hero.height=Math.round(1400*out.h/out.w);
-    Render.renderScreen(hero.getContext('2d'),hero.width,hero.height,tpl.screens[0],{lang:I18N.lang,defaultLang:'en',imageFor:()=>mock,project:{app:{},languages:{default:'en'}}});
-    strip('tplCanvas', ['studio-cobalt', 'studio-peach', 'studio-signal'], 300, true);
-    strip('custCanvas', ['studio-mono', 'studio-lime', 'studio-paper'], 300, true);
-    strip('locCanvas', ['studio-orchid', 'studio-sand', 'studio-tide'], 300, true);
-  }
-  function creativePreviews() {
-    [['assetHeader','creative-paper-header'],['assetSearch','creative-midnight-search'],['assetUniversal','creative-lime-universal']].forEach(([id,key]) => {
-      const tpl=byKey(key), cv=$('#'+id), out=Devices.byId(tpl.sizes[0]); cv.width=900; cv.height=Math.round(900*out.h/out.w);
-      Render.renderScreen(cv.getContext('2d'),cv.width,cv.height,tpl.screens[0],{lang:I18N.lang,defaultLang:'en',imageFor:()=>mock,project:{app:{},languages:{default:'en'}}});
-    });
-  }
-  creativePreviews(); if(document.fonts) document.fonts.ready.then(creativePreviews);
-  all(); if (document.fonts) document.fonts.ready.then(all);
-  $('#langs').innerHTML = Object.entries(window.Model.LANG_NAMES).map(([k, v]) => `<span>${window.Model.LANG_FLAGS[k] || '🌐'} ${v}</span>`).join('');
-  const g = $('#sizeGrid'); window.Devices.OUTPUTS.forEach((o) => { const d = document.createElement('div'); d.className = 'step'; d.innerHTML = `<h3 style="font-size:14px">${o.label}</h3><p>${o.w}×${o.h}px · ${o.display || ''}</p>`; g.appendChild(d); });
-})();
-</script>
-</body>
-</html>
+<meta property="og:type" content="website"><meta property="og:title" content="Framegrove — Your app deserves a better first impression."><meta property="og:description" content="App Store Creative Assets. iPhone Duo screenshots. One free editor."><meta property="og:url" content="https://framegrove.bamstudio.dev/"><meta name="twitter:card" content="summary_large_image"><meta property="og:image" content="https://framegrove.bamstudio.dev/social.png">
+<link rel="stylesheet" href="fonts.css"><link rel="stylesheet" href="site.css"><link rel="stylesheet" href="landing.css">
+<link rel="icon" href="favicon.svg"><link rel="describedby" href="/llms.txt"><link rel="alternate" type="text/markdown" href="/index.md">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Framegrove","url":"https://framegrove.bamstudio.dev/","applicationCategory":"DesignApplication","operatingSystem":"Web browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free App Store Creative Assets and iPhone Duo screenshot editor with local projects, MCP and CLI."}</script>
+</head><body><header id="nav"></header>
+<main>
+<section class="hero-section"><div class="container hero-grid"><div class="hero-copy">
+ <a class="release-pill" href="iphone-duo/"><span class="pulse-dot"></span><span data-t>New canvas. New iPhone. Your move.</span><span>↗</span></a>
+ <h1><span data-t>Your app deserves</span><br><em data-t>a better first impression.</em></h1>
+ <p class="hero-lede" data-t>Make the scroll stop. Design App Store Creative Assets and iPhone Duo screenshots with a real editor, thoughtful templates and your real app.</p>
+ <div class="hero-actions"><a class="btn primary lg" href="templates/#/creative"><span data-t>Make something great</span> ↗</a><a class="btn ghost lg" href="app/#/sandbox" data-t>Explore the editor</a></div>
+ <p class="trust-line"><span data-t>Free. No signup. No watermark.</span><span class="trust-dot">·</span><a href="https://github.com/tech-bam/framegrove" target="_blank" rel="noopener" data-t>Open source</a></p>
+ <div class="hero-proof"><div><b id="stTpl">56</b><span data-t>curated templates</span></div><div><b>34</b><span data-t>caption languages</span></div><div><b>100%</b><span data-t>local projects</span></div></div>
+</div><div class="hero-art" aria-label="Examples of editable creative assets and Duo screenshots"><div class="art-label"><span>FRAMEGROVE / LAUNCH COLLECTION</span><span>↗</span></div><canvas id="heroMain"></canvas><div class="hero-mini"><canvas id="heroDuo"></canvas><canvas id="heroPhone"></canvas><div class="art-note"><span>01—03</span><strong data-t>One brand. Every canvas.</strong><span data-t>Sample UI. Bring your real screens.</span></div></div></div></div></section>
+<div class="feature-ribbon"><div class="container"><span>APP STORE CREATIVE ASSETS</span><i>✳</i><span>IPHONE DUO</span><i>✳</i><span>SCREENSHOTS</span><i>✳</i><span>MCP + CLI + SKILL</span></div></div>
+<section class="section creative-section" id="creative-assets"><div class="container"><div class="section-heading"><div><span class="eyebrow" data-t>The App Store has a new billboard.</span><h2 data-t>Be the app they notice.</h2></div><p data-t>Header. Search. Universal. Give each placement its own composition, with exact Apple dimensions and editable layers.</p></div>
+<div class="asset-grid"><a class="asset-card" href="templates/#/t/creative-paper-header"><canvas id="assetHeader"></canvas><div><h3 data-t>Product page header</h3><span>3840 × 1646 / PNG ↗</span></div></a><a class="asset-card" href="templates/#/t/creative-midnight-search"><canvas id="assetSearch"></canvas><div><h3 data-t>Search results</h3><span>3840 × 2560 / PNG · JPG ↗</span></div></a><a class="asset-card" href="templates/#/t/creative-lime-universal"><canvas id="assetUniversal"></canvas><div><h3 data-t>One asset, both placements</h3><span>5244 × 2950 / PNG ↗</span></div></a></div>
+<div class="section-actions"><a class="btn primary" href="templates/#/creative"><span data-t>Explore creative templates</span> ↗</a><a href="creative-assets/" data-t>Sizes & practical guide →</a></div><p class="fine-print" data-t>Preview cropping in App Store Connect. Creative Assets are static artwork, separate from app preview videos.</p>
+</div></section>
+<section class="section duo-section" id="iphone-duo"><div class="container duo-grid"><div class="duo-art"><canvas id="duoShowcase"></canvas><div class="duo-size-label"><span>INNER / 2007 × 2853</span><span>OUTER / 1398 × 2034</span></div></div><div><span class="eyebrow" data-t>iPhone Duo screenshot generator</span><h2><span data-t>Two screens.</span><br><em data-t>Twice the story.</em></h2><p class="section-lede" data-t>Yesterday’s phone layout won’t tell the whole story. Prepare dedicated inner and outer screenshots with layouts that give your app room to breathe.</p><ul class="feature-list"><li data-t>12 Duo templates, including inner landscape.</li><li data-t>Separate screenshot slots for each display.</li><li data-t>Exact published dimensions. Opaque PNG exports.</li></ul><div class="section-actions"><a class="btn primary" href="templates/#/duo"><span data-t>Get ahead with Duo</span> ↗</a><a href="iphone-duo/" data-t>Duo sizes & guide →</a></div><p class="fine-print" data-t>Prepare now. Apple says Duo uploads in App Store Connect will open later this year. Check availability before submitting.</p></div></div></section>
+<section class="section collection-section" id="templates"><div class="container"><div class="section-heading"><div><span class="eyebrow" data-t>A collection, not a pile of presets.</span><h2 data-t>Find your app’s visual voice.</h2></div><p data-t>Editorial, electric, quiet or bold. Every layer is yours: typography, backgrounds, frames and captions.</p></div><div class="collection-tabs" role="group" aria-label="Template collection"><button class="on" data-collection="paper" aria-pressed="true">01 / Paper</button><button data-collection="midnight" aria-pressed="false">02 / Midnight</button><button data-collection="lime" aria-pressed="false">03 / Lime</button><button data-collection="cobalt" aria-pressed="false">04 / Cobalt</button></div><div class="collection-strip" id="collectionStrip"></div><div class="section-actions"><a class="btn ghost" href="templates/"><span data-t>Find your template</span> ↗</a><span class="fine-print" data-t>All current templates are free. Every layer is editable.</span></div></div></section>
+<section class="section workflow-section" id="how"><div class="container"><span class="eyebrow" data-t>A launch kit, without the busywork.</span><h2 data-t>From raw screens to a coherent launch.</h2><div class="workflow-grid"><article><span>01 /</span><h3 data-t>Choose a direction</h3><p data-t>Start with a collection built for your placement, not a stretched screenshot.</p></article><article><span>02 /</span><h3 data-t>Make it yours</h3><p data-t>Drop in real screens. Shape the copy. Move every layer in the canvas editor.</p></article><article><span>03 /</span><h3 data-t>Meet every audience</h3><p data-t>Keep captions per language. Optional AI helps draft and translate with your own key.</p></article><article><span>04 /</span><h3 data-t>Export, then launch</h3><p data-t>Download exact-size images in a tidy ZIP. Back up editable projects as a file.</p></article></div></div></section>
+<section class="section automation-section" id="automation"><div class="container automation-grid"><div><span class="eyebrow">MCP / CLI / SKILL</span><h2><span data-t>Your coding agent.</span><br><span data-t>Your art department.</span></h2><p class="section-lede" data-t>Go from real app screenshots to a complete campaign in your agent session. The same engine. The same templates. An editable project when you want the final say.</p><div class="section-actions"><a class="btn primary" href="mcp/" data-t>Set up automation →</a><a href="downloads/framegrove-skill.zip" data-t>Download the skill ↗</a></div></div><div class="code-card"><div><span class="code-dot"></span><span>FRAMEGROVE / AGENT WORKFLOW</span></div><pre><code>list_templates
+    → find a coherent collection
+render_screenshots
+    → exact dimensions, every language
+build_project
+    → keep the final edit yours</code></pre><p data-t>Only this product. No parent website repository.</p></div></div></section>
+<section class="section support-section" id="support"><div class="container support-grid"><div><span class="eyebrow" data-t>Built in the open.</span><h2><span data-t>Good tools should</span><br><span data-t>be within reach.</span></h2><p class="section-lede" data-t>Framegrove is free and open source. No subscription, signup or watermark. If it saves your afternoon, a coffee helps the next collection happen.</p><div class="section-actions"><a class="btn primary lg" href="https://buymeacoffee.com/bamstudio" target="_blank" rel="noopener"><span>☕</span> <span data-t>Buy me a coffee</span> ↗</a><a class="btn ghost" href="https://github.com/tech-bam/framegrove" target="_blank" rel="noopener" data-t>Star or contribute on GitHub ↗</a></div></div><div class="support-note"><span>✳</span><strong>$0</strong><p><span data-t>The full editor.</span><br><span data-t>Every current template.</span><br><span data-t>All exports.</span></p><span data-t>Optional support. Always appreciated.</span></div></div></section>
+<section class="section faq-section" id="faq"><div class="container faq-grid"><h2 data-t>The useful details.</h2><div><details><summary data-t>What stays on my device?</summary><p data-t>Projects and screenshots live in your browser. Export a project backup before clearing site data or changing browsers. Optional AI sends your description and captions to your chosen provider.</p></details><details><summary data-t>Do I need an AI key?</summary><p data-t>No. The editor and exports work without AI. Use your own Anthropic key for optional captions, or copy the prompt into your preferred assistant.</p></details><details><summary data-t>Can I use this commercially?</summary><p data-t>Yes. The source is MIT licensed. Your exported designs can be used for your apps. You remain responsible for rights to uploaded material and truthful marketing claims.</p></details><details><summary data-t>Will these assets be accepted by Apple?</summary><p data-t>Framegrove exports the preset dimensions and opaque Creative Assets PNGs. Review your content, cropping and current store requirements in App Store Connect before submission.</p></details></div></div></section>
+</main><footer id="footer"></footer>
+<script src="engine/site-locales.js"></script><script src="engine/i18n.js"></script><script src="engine/frames.js"></script><script src="engine/devices.js"></script><script src="engine/render.js"></script><script src="engine/model.js"></script><script src="engine/tpl-dsl.js"></script><script src="engine/templates/index.js"></script><script src="common.js"></script><script src="landing.js"></script>
+</body></html>

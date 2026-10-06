@@ -1,0 +1,23 @@
+# Framegrove
+
+> Free, open-source, local-first store marketing editor. Create App Store Creative Assets, iPhone Duo inner/outer screenshots and App Store/Google Play screenshot series from real app captures. No signup or watermark.
+
+Website UI: EN, TR, DE, FR, ES, IT, PT, JA. Project captions: 34 languages. Current templates: 56 curated collections/compositions. The authoritative MCP catalog is `list_templates`.
+
+## Product
+- [Product overview](https://framegrove.bamstudio.dev/index.md): Capabilities, local storage, languages and scope.
+- [Template collections](https://framegrove.bamstudio.dev/templates/index.md): Template keys, surfaces and composition choices.
+- [iPhone Duo](https://framegrove.bamstudio.dev/iphone-duo/index.md): Exact screenshot dimensions, separate display slots and upload availability.
+- [Apple Creative Assets](https://framegrove.bamstudio.dev/creative-assets/index.md): Header, Search and Universal artwork specifications.
+
+## Automation
+- [MCP and CLI](https://framegrove.bamstudio.dev/mcp/index.md): Standalone installation, tool schema overview and examples.
+- [Framegrove skill](https://framegrove.bamstudio.dev/skills/framegrove/SKILL.md): Reusable workflow for coherent, truthful campaigns and visual review.
+
+## Policies
+- [Privacy and usage](https://framegrove.bamstudio.dev/privacy/index.md): Local projects, optional AI and commercial use.
+
+## Optional
+- [Extended product documentation](https://framegrove.bamstudio.dev/llms-full.txt)
+- [Dedicated source repository](https://github.com/tech-bam/framegrove)
+- [Support with a coffee](https://buymeacoffee.com/bamstudio)

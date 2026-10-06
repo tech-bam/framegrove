@@ -3,7 +3,7 @@
 (function (global) {
   const OUTPUTS = [
     // Apple
-    { id: 'iphone-6.9', store: 'apple', group: 'iPhone', label: 'iPhones - 6.9"', w: 1320, h: 2868, frame: 'iphone-pro', display: 'iPhone 16 Pro Max', free: true, note: 'App Store Connect zorunlu (6.9")' },
+    { id: 'iphone-6.9', store: 'apple', group: 'iPhone', label: 'iPhones - 6.9"', w: 1320, h: 2868, frame: 'iphone-pro', display: 'iPhone 16 Pro Max', free: true, note: 'Large-display screenshot preset' },
     { id: 'iphone-6.7', store: 'apple', group: 'iPhone', label: 'iPhones - 6.7"', w: 1290, h: 2796, frame: 'iphone-pro', display: 'iPhone 15 Pro Max', free: true },
     { id: 'iphone-6.5', store: 'apple', group: 'iPhone', label: 'iPhones - 6.5"', w: 1242, h: 2688, frame: 'iphone-notch', display: 'iPhone 11 Pro Max', free: true },
     { id: 'iphone-6.3', store: 'apple', group: 'iPhone', label: 'iPhones - 6.3"', w: 1206, h: 2622, frame: 'iphone-pro', display: 'iPhone 16 Pro' },
@@ -15,6 +15,9 @@
     { id: 'watch', store: 'apple', group: 'Watch', label: 'Apple Watch', w: 396, h: 484, frame: 'watch', display: 'Apple Watch Series 10', landscapeOnly: false },
     { id: 'macos', store: 'apple', group: 'Mac', label: 'Mac OS', w: 2880, h: 1800, frame: 'browser', display: 'Mac Studio Display', landscape: true },
     { id: 'visionpro', store: 'apple', group: 'Vision', label: 'Apple Vision Pro', w: 3840, h: 2160, frame: 'none', display: 'Apple Vision Pro', landscape: true },
+    // Apple's published Duo screenshot sizes, checked 2026-10-06.
+    { id: 'iphone-duo-outer', store: 'apple', group: 'iPhone Duo', label: 'iPhone Duo · Outer display', w: 1398, h: 2034, frame: 'duo-outer', display: 'iPhone Duo · outer', opaque: true, free: true },
+    { id: 'iphone-duo-inner', store: 'apple', group: 'iPhone Duo', label: 'iPhone Duo · Inner display', w: 2007, h: 2853, frame: 'duo-inner', display: 'iPhone Duo · inner', opaque: true, free: true },
     // Apple creative assets: fixed placements, verified 2026-10-06.
     { id: 'apple-header', store: 'apple', group: 'Creative Assets', label: 'Product page header · 21:9', w: 3840, h: 1646, frame: 'none', landscape: true, fixed: true, creative: true, pngOnly: true, free: true },
     { id: 'apple-search', store: 'apple', group: 'Creative Assets', label: 'Search results · 3:2', w: 3840, h: 2560, frame: 'none', landscape: true, fixed: true, creative: true, free: true },
@@ -38,6 +41,8 @@
   const SHOT_SLOTS = [
     { id: 'global', label: 'Global Screenshot', ratio: null },
     { id: 'iphone', label: 'iPhones (19.5:9)', ratio: 1320 / 2868, group: 'Apple', typical: '1320×2868', outputs: ['iphone-6.9', 'iphone-6.7', 'iphone-6.5', 'iphone-6.3', 'iphone-6.1', 'iphone-5.5'] },
+    { id: 'iphone-duo-outer', label: 'iPhone Duo · Outer screenshot', ratio: 1398 / 2034, group: 'iPhone Duo', typical: '1398×2034', outputs: ['iphone-duo-outer'] },
+    { id: 'iphone-duo-inner', label: 'iPhone Duo · Inner screenshot', ratio: 2007 / 2853, group: 'iPhone Duo', typical: '2007×2853', outputs: ['iphone-duo-inner'] },
     { id: 'ipad', label: 'iPad (4:3)', ratio: 2064 / 2752, group: 'Apple', typical: '2064×2752', outputs: ['ipad-13', 'ipad-12.9', 'ipad-11'] },
     { id: 'watch', label: 'Apple Watch', ratio: 396 / 484, group: 'Apple', typical: '396×484', outputs: ['watch', 'wearos'] },
     { id: 'android-phone', label: 'Android phone (19.5:9)', ratio: 1080 / 2340, group: 'Android', typical: '1080×2340', outputs: ['android-phone', 'android-phone-tall', 'amazon', 'huawei', 'msstore'] },

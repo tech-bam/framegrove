@@ -125,3 +125,4 @@ section[id] { scroll-margin-top:70px; }
  .nav>.btn.primary { display:none; }
  .nav #uiLang { flex-shrink:0; }
 }
+.lang-select{font:11px var(--font);background:#ffffff08;color:inherit;border:1px solid #ffffff30;border-radius:6px;padding:6px;max-width:110px}.lang-select option{background:#173126;color:white}

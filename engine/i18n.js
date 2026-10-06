@@ -53,9 +53,11 @@
     'Pick a style, drop in your screens, and get a complete set of store-ready screenshots in minutes.': 'Bir stil seç, ekranlarını bırak, dakikalar içinde mağazaya hazır tam set al.',
     'Everything stays in your browser': 'Her şey tarayıcında kalır',
   };
+  const languages={en:'English',tr:'Türkçe',de:'Deutsch',fr:'Français',es:'Español',it:'Italiano',pt:'Português',ja:'日本語'};
+  const dictionaries=global.FRAMEGROVE_LOCALES||{};
   let lang = 'en';
   function t(key, vars) {
-    let out = (lang === 'tr' && TR[key]) || key;
+    let out = dictionaries[lang]?.[key] || (lang === 'tr' && TR[key]) || key;
     if (vars) for (const k in vars) out = out.split('{' + k + '}').join(vars[k]);
     return out;
   }
@@ -66,10 +68,14 @@
     document.documentElement.lang = lang;
   }
   function detect() {
-    try { const s = localStorage.getItem('sms-ui-lang'); if (s) return s; } catch (e) { }
-    return (navigator.language || 'en').toLowerCase().startsWith('tr') ? 'tr' : 'en';
+    try {
+      const explicit=new URLSearchParams(global.location?.search||'').get('lang');if(languages[explicit])return explicit;
+      const route=(global.location?.pathname||'').match(/^\/(tr|de|fr|es|it|pt|ja)\//);if(route)return route[1];
+      const saved=localStorage.getItem('sms-ui-lang');if(languages[saved])return saved;
+    } catch(e) {}
+    return (navigator.languages?.[0]||navigator.language||'en').toLowerCase().startsWith('tr')?'tr':'en';
   }
-  function set(l) { lang = l === 'tr' ? 'tr' : 'en'; try { localStorage.setItem('sms-ui-lang', lang); } catch (e) { } apply(); }
+  function set(l) { lang=languages[l]?l:'en';try{localStorage.setItem('sms-ui-lang',lang);}catch(e){}apply(); }
   global.t = t;
-  global.I18N = { get lang() { return lang; }, set, apply, detect, extend: (d) => Object.assign(TR, d) };
+  global.I18N = { get lang() { return lang; }, languages, set, apply, detect, extend: (d) => Object.assign(TR, d) };
 })(window);

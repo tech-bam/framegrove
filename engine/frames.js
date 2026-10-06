@@ -12,6 +12,18 @@
       homeIndicator: true,
       buttons: true,
     },
+    'duo-outer': {
+      label: 'iPhone Duo · Outer (schematic)', screenRatio: 2034 / 1398,
+      bezel: { t:.026,r:.026,b:.026,l:.026 }, bodyRadius:.09, screenRadius:.07, homeIndicator:true, buttons:true,
+    },
+    'duo-inner': {
+      label: 'iPhone Duo · Inner (schematic)', screenRatio: 2853 / 2007,
+      bezel: { t:.024,r:.024,b:.024,l:.024 }, bodyRadius:.055, screenRadius:.04, homeIndicator:true,
+    },
+    'duo-inner-landscape': {
+      label: 'iPhone Duo · Inner landscape (schematic)', screenRatio: 2007 / 2853,
+      bezel: { t:.018,r:.018,b:.018,l:.018 }, bodyRadius:.04, screenRadius:.03, homeIndicator:true,
+    },
     'iphone-notch': {
       label: 'iPhone (Çentik)',
       screenRatio: 2688 / 1242,

@@ -1,15 +1,11 @@
 #!/usr/bin/env node
-/* Store Mockup MCP sunucusu (stdio). Araçlar:
-   - list_templates        : şablonlar + etiketler
-   - render_screenshots    : şablon + metin + ss dosyaları → PNG'ler (App Store / Play boyutları)
-   - build_project         : tarayıcı uygulamasına içe aktarılacak .sms.json
-   Kurulum: claude mcp add store-mockup -- node /path/to/mcp/server.mjs */
+/* Framegrove MCP server (stdio): discovery, rendering, editable projects and asset validation. */
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
 import fs from 'node:fs';
 import path from 'node:path';
-import { listTemplates, renderSet, buildBundle } from './render-node.mjs';
+import { listTemplates, listOutputs, inspectAssets, renderSet, buildBundle } from './render-node.mjs';
 
 const server = new McpServer({ name: 'framegrove', version: '1.0.0' });
 
@@ -19,12 +15,12 @@ const SpecShape = {
   lang: z.string().default('en').describe('Default caption language code (en, tr, de, …).'),
   lines: z.array(z.string()).optional().describe('Captions in the default language, one per screen: "Headline [highlight] | Subtitle". Headline ≤30 chars, subtitle ≤55; wrap ONE benefit word in [brackets]; \\n for a line break.'),
   captions: z.record(z.array(z.string())).optional().describe('Captions per language: {"en":[…],"tr":[…]}. Same order and count for every language. Overrides `lines` for that language.'),
-  shots: z.union([z.array(z.string()), z.record(z.array(z.string()))]).default([]).describe('Screenshot file paths in screen order — an array (used for every device) or per family: {"global":[…],"iphone":[…],"ipad":[…],"android-phone":[…]}.'),
+  shots: z.union([z.array(z.string()), z.record(z.array(z.string()))]).default([]).describe('Screenshot file paths in screen order — an array (used for every device) or per family: {"global":[…],"iphone":[…],"ipad":[…],"android-phone":[…],"iphone-duo-inner":[…],"iphone-duo-outer":[…]}.'),
   icon: z.string().optional().describe('App icon file path (square PNG).'),
   accent: z.string().optional().describe('Brand accent hex (#16a34a). Omit to keep the template colour.'),
   rating: z.string().optional().describe('Rating badge text for screen 1, e.g. "4.8 · 1.2K ratings". Only if real.'),
   addIcon: z.boolean().default(true).describe('Draw icon + app name on screen 1.'),
-  frame: z.string().optional().describe('Device frame override: iphone-pro | iphone-notch | android | tablet | none.'),
+  frame: z.string().optional().describe('Device frame override: iphone-pro | iphone-notch | duo-inner | duo-outer | duo-inner-landscape | android | tablet | none.'),
 };
 
 server.tool(
@@ -34,9 +30,12 @@ server.tool(
   async () => ({ content: [{ type: 'text', text: JSON.stringify(listTemplates(), null, 1) }] })
 );
 
+server.tool('list_outputs','List exact output dimensions, screenshot family slots and format constraints.',{},async()=>({content:[{type:'text',text:JSON.stringify(listOutputs(),null,1)}]}));
+server.tool('inspect_assets','Read exported image dimensions and PNG alpha channels, optionally checking a preset. Does not change files.',{paths:z.array(z.string()),output:z.string().optional(),orientation:z.enum(['portrait','landscape']).default('portrait')},async({paths,output,orientation})=>({content:[{type:'text',text:JSON.stringify(await inspectAssets(paths,output,orientation),null,1)}]}));
+
 server.tool(
   'render_screenshots',
-  'Render a complete App Store / Google Play screenshot set as PNG files from a template, captions and screenshot files. Output is organised as language / size / screen. Sizes are output ids from devices (iphone-6.9, iphone-6.5, ipad-13, android-phone, android-tablet-10, watch, macos …) or "WxH".',
+  'Render a complete App Store / Google Play / iPhone Duo screenshot or Creative Assets set as PNG files from a template, captions and screenshot files. Output is organised as language / size / screen. Sizes are output ids from devices (iphone-6.9, iphone-6.5, ipad-13, android-phone, android-tablet-10, watch, macos …) or "WxH".',
   {
     ...SpecShape,
     sizes: z.array(z.string()).optional().describe('Output ids or "WxH". Each size gets its own subfolder when more than one.'),
@@ -54,7 +53,7 @@ server.tool(
 server.tool(
   'build_project',
   'Write a project file (.sms.json) that can be imported into the Framegrove web app (Projects → Import project) for visual fine-tuning in the browser. Use when the user wants to edit in the editor instead of final PNGs.',
-  { ...SpecShape, out: z.string().default('./store-mockup.sms.json').describe('Output .json path.') },
+  { ...SpecShape, out: z.string().default('./framegrove.sms.json').describe('Output .json path.') },
   async (spec) => {
     const b = await buildBundle(spec);
     fs.writeFileSync(spec.out, JSON.stringify(b));

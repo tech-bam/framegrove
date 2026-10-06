@@ -1,0 +1,4 @@
+interface:
+  display_name: "Framegrove"
+  short_description: "Create polished store screenshots and creative assets"
+  default_prompt: "Use $framegrove to create a coherent store screenshot and creative asset campaign from my real app screenshots."

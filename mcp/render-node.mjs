@@ -36,6 +36,29 @@ export function listTemplates() {
   return w.TEMPLATES.filter(t => !t.archived).map((t) => ({ key: t.key, name: t.name, description: t.desc, tags: t.tags || [], categories: t.cats || [], theme: t.theme, skill: t.skill, screens: t.screens.length, orientation: t.orientation, sizes: t.sizes, collection: t.collection, panoramic: !!t.background }));
 }
 
+export function listOutputs(){
+ const w=engine();return w.Devices.OUTPUTS.map(o=>({...o,slot:w.Devices.slotForOutput(o.id),formats:o.pngOnly?['png']:['png','jpeg']}));
+}
+export async function inspectAssets(paths,outputId,orientation='portrait'){
+ const w=engine(),o=outputId?w.Devices.byId(outputId):null;
+ if(outputId&&!o)throw Error('Unknown output: '+outputId);
+ const expected=o?w.Devices.dimensions(o,orientation):null;
+ return Promise.all(paths.map(async file=>{
+  try{
+   const bytes=fs.readFileSync(file),png=bytes.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10])),im=await loadImage(bytes);
+   const type=png?bytes[25]:null,alpha=png&&(type===4||type===6),issues=[];
+   let transparency=alpha;
+   if(png)for(let offset=8;offset+12<=bytes.length;){const length=bytes.readUInt32BE(offset);if(bytes.toString('ascii',offset+4,offset+8)==='tRNS')transparency=true;offset+=12+length;}
+   const jpeg=bytes[0]===255&&bytes[1]===216;
+   if(expected&&(im.width!==expected.W||im.height!==expected.H))issues.push(`Expected ${expected.W}×${expected.H}`);
+   if(o?.store==='apple'&&transparency)issues.push('Apple screenshots and creative assets must have no alpha channel');
+   if(o?.store==='apple'&&!png&&!jpeg)issues.push('Use PNG or JPEG');
+   if(o?.pngOnly&&!png)issues.push('This placement requires PNG');
+   return{file,width:im.width,height:im.height,format:png?'png':jpeg?'jpeg':'other',pngColorType:type,hasAlphaChannel:alpha,hasTransparency:transparency,valid:issues.length===0,issues};
+  }catch(e){return{file,valid:false,issues:[e.message]};}
+ }));
+}
+
 const MIME = { '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp' };
 async function img(p) { if (!p) return null; if (/^data:/.test(p)) return loadImage(Buffer.from(p.split(',')[1], 'base64')); return loadImage(fs.readFileSync(p)); }
 const toData = (p) => (/^data:/.test(p) ? p : `data:${MIME[path.extname(p).toLowerCase()] || 'image/png'};base64,${fs.readFileSync(p).toString('base64')}`);
@@ -88,7 +111,7 @@ export async function buildProject(spec) {
     first.layers = first.layers.filter((L) => !(L.type === 'element' && (L.kind === 'rating' || L.kind === 'icon')));
     const title = first.layers.find((L) => L.type === 'text');
     const light = Render.contrastFor((title && title.color) || '#ffffff') === '#111214';
-    if (spec.addIcon !== false && tpl.collection !== 'creative' && spec.name) first.layers.push(Model.newLayer('element', { kind: 'icon', text: { [lang]: spec.name }, x: 50, y: 3.5, size: 2.8, iconBg: accent || '#6d5ce7', color: (title && title.color) || '#ffffff' }));
+    if (spec.addIcon !== false && tpl.collection !== 'creative' && tpl.collection !== 'duo' && spec.name) first.layers.push(Model.newLayer('element', { kind: 'icon', text: { [lang]: spec.name }, x: 50, y: 3.5, size: 2.8, iconBg: accent || '#6d5ce7', color: (title && title.color) || '#ffffff' }));
     if (spec.rating) first.layers.push(Model.newLayer('element', { kind: 'rating', text: { [lang]: spec.rating }, x: 50, y: title ? title.y + (title.h || 12) + 1 : 20, size: 2.4, bg: light ? '#ffffff' : '#111214', color: light ? '#111214' : '#ffffff' }));
   }
   return { project, assets };
@@ -115,11 +138,11 @@ export async function renderSet(spec) {
       fs.mkdirSync(dir, { recursive: true });
       for (const [i, s] of project.screens.entries()) {
         const c = createCanvas(W, H);
-        const context = c.getContext('2d', o.creative ? { alpha: false } : undefined);
+        const context = c.getContext('2d', (o.creative || o.opaque) ? { alpha: false } : undefined);
         Render.renderScreen(context, W, H, s, { lang: l, defaultLang: project.languages.default, imageFor, shotSlot: Devices.slotForOutput(o.id) || 'global', pan: s.bg && s.bg.panorama ? { i, n: project.screens.length } : null, project });
         const title = Render.textOf((s.layers.find((L) => L.type === 'text') || {}).text, l, project.languages.default);
         const file = path.join(dir, `${String(i + 1).padStart(2, '0')}-${slug(title)}.png`);
-        fs.writeFileSync(file, o.creative ? await globalThis.OpaquePNG.encode(c, deflateSync) : c.encodeSync('png'));
+        fs.writeFileSync(file, (o.creative || o.opaque) ? await globalThis.OpaquePNG.encode(c, deflateSync) : c.encodeSync('png'));
         files.push(file);
       }
     }

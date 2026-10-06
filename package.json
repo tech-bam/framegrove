@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "test": "node mcp/verify-studio.mjs",
+    "test": "node mcp/verify-studio.mjs && node scripts/verify-mcp.mjs",
     "build": "python3 scripts/build.py",
     "serve": "python3 -m http.server 8766 --bind 127.0.0.1 --directory public"
   }

@@ -4,9 +4,20 @@ A free, local-first App Store Creative Assets and screenshot editor.
 
 Live: https://framegrove.bamstudio.dev
 
+![Framegrove editor and launch collection](docs/framegrove-live.png)
+
+- 56 curated templates and 172 editable compositions.
+- App Store Header, Search and Universal Creative Assets.
+- Dedicated iPhone Duo inner, outer and inner-landscape series.
+- Eight website languages, 34 caption languages, exact-size exports.
+- Local projects, standalone MCP/CLI and a reusable agent skill.
+- Free, MIT licensed, no signup or watermark.
+
+[Creative Assets guide](https://framegrove.bamstudio.dev/creative-assets/) · [Duo guide](https://framegrove.bamstudio.dev/iphone-duo/) · [Automation](https://framegrove.bamstudio.dev/mcp/)
+
 ## Web editor
 
-`python3 scripts/build.py` then `python3 -m http.server 8766 --directory public`.
+From a source checkout: `python3 scripts/build.py` then `python3 -m http.server 8766 --directory public`.
 
 ## MCP and CLI
 
@@ -39,4 +50,14 @@ The Worker serves `framegrove.bamstudio.dev`. The legacy product route redirects
 
 ## Launch validation
 
-44 curated templates, including 24 Apple Creative Assets compositions. 496 EN/TR render checks passed. Header, Search and Universal PNGs were checked for exact dimensions and an RGB colour type without alpha. The standalone MCP download was installed in a clean directory and used to render a Header asset. The live browser Header download was also checked at 3840 × 1646.
+56 curated templates: 16 phone series, 24 Apple Creative Assets compositions, 12 iPhone Duo series and 4 tablet series. 568 EN/TR render checks passed. Header, Search, Universal and Duo PNGs were checked for exact dimensions and an RGB colour type without alpha. The standalone MCP download was installed in a clean directory and used to render a Header asset. The live browser Header download was also checked at 3840 × 1646.
+
+## Languages and agent skill
+
+The landing page supports English, Turkish, German, French, Spanish, Italian, Portuguese and Japanese. Turkish browsers start in Turkish; other browsers start in English. Advanced editor help can fall back to English. Captions support 34 languages.
+
+The reusable agent skill is in `skills/framegrove/`. Download it at https://framegrove.bamstudio.dev/downloads/framegrove-skill.zip. MCP provides template discovery, output constraints, rendering, editable projects and exported image inspection.
+
+Duo inner and outer screenshot slots are separate. Apple says Duo uploads will be available later in 2026; check availability before submitting.
+
+Machine-readable product documentation: https://framegrove.bamstudio.dev/llms.txt
