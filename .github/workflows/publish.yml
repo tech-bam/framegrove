@@ -1,0 +1,38 @@
+name: Publish
+
+# Publishes the npm package and the MCP Registry entry when a GitHub release is published.
+# Needs the NPM_TOKEN repository secret (an npm automation token).
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+      - name: Check versions match the tag
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          test "$(node -p "require('./mcp/package.json').version")" = "$tag"
+          test "$(node -p "require('./server.json').version")" = "$tag"
+          test "$(node -p "require('./.claude-plugin/plugin.json').version")" = "$tag"
+      - run: npm ci
+        working-directory: mcp
+      - run: npm publish --provenance --access public
+        working-directory: mcp
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Publish to the MCP Registry
+        run: |
+          curl -sL "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_linux_amd64.tar.gz" | tar xz mcp-publisher
+          ./mcp-publisher login github-oidc
+          ./mcp-publisher publish

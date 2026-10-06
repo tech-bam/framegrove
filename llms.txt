@@ -11,7 +11,7 @@ Website UI: EN, TR, DE, FR, ES, IT, PT, JA. Project captions: 34 languages. Curr
 - [Apple Creative Assets](https://framegrove.bamstudio.dev/creative-assets/index.md): Header, Search and Universal artwork specifications.
 
 ## Automation
-- [MCP and CLI](https://framegrove.bamstudio.dev/mcp/index.md): Standalone installation, tool schema overview and examples.
+- [MCP and CLI](https://framegrove.bamstudio.dev/mcp/index.md): npx installation, tool schema overview and examples.
 - [Framegrove skill](https://framegrove.bamstudio.dev/skills/framegrove/SKILL.md): Reusable workflow for coherent, truthful campaigns and visual review.
 
 ## Policies

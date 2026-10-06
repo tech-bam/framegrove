@@ -5,9 +5,11 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { z } from 'zod';
 import fs from 'node:fs';
 import path from 'node:path';
+import { createRequire } from 'node:module';
 import { listTemplates, listOutputs, inspectAssets, renderSet, buildBundle } from './render-node.mjs';
 
-const server = new McpServer({ name: 'framegrove', version: '1.0.0' });
+const { version } = createRequire(import.meta.url)('./package.json');
+const server = new McpServer({ name: 'framegrove', title: 'Framegrove', version });
 
 const SpecShape = {
   template: z.string().describe('Template key from list_templates (e.g. studio-paper, studio-midnight, creative-paper-header, creative-lime-search).'),
@@ -23,25 +25,28 @@ const SpecShape = {
   frame: z.string().optional().describe('Device frame override: iphone-pro | iphone-notch | duo-inner | duo-outer | duo-inner-landscape | android | tablet | none.'),
 };
 
-server.tool(
+const READ = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false };
+const WRITE = { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false };
+
+server.registerTool(
   'list_templates',
-  'List the screenshot templates (key, name, description, tags, slide count). Pick by the app category and desired theme (acik=light, koyu=dark, renkli=colourful).',
-  {},
+  { title: 'List templates', description: 'List the curated screenshot and Creative Assets templates (key, name, description, tags, theme light/dark/colourful, orientation, default output sizes, screen count). Pick by app category and desired theme.', inputSchema: {}, annotations: READ },
   async () => ({ content: [{ type: 'text', text: JSON.stringify(listTemplates(), null, 1) }] })
 );
 
-server.tool('list_outputs','List exact output dimensions, screenshot family slots and format constraints.',{},async()=>({content:[{type:'text',text:JSON.stringify(listOutputs(),null,1)}]}));
-server.tool('inspect_assets','Read exported image dimensions and PNG alpha channels, optionally checking a preset. Does not change files.',{paths:z.array(z.string()),output:z.string().optional(),orientation:z.enum(['portrait','landscape']).default('portrait')},async({paths,output,orientation})=>({content:[{type:'text',text:JSON.stringify(await inspectAssets(paths,output,orientation),null,1)}]}));
+server.registerTool('list_outputs',{title:'List output sizes',description:'List exact output dimensions for App Store, Google Play, iPhone Duo and Creative Assets, with screenshot family slots and format constraints.',inputSchema:{},annotations:READ},async()=>({content:[{type:'text',text:JSON.stringify(listOutputs(),null,1)}]}));
+server.registerTool('inspect_assets',{title:'Inspect exported images',description:'Read exported image dimensions and PNG alpha channels, optionally validating them against an output id from list_outputs. Does not change files.',inputSchema:{paths:z.array(z.string()).describe('Image file paths, absolute or relative to the server working directory.'),output:z.string().optional().describe('Output id to validate against, e.g. iphone-6.9.'),orientation:z.enum(['portrait','landscape']).default('portrait')},annotations:READ},async({paths,output,orientation})=>({content:[{type:'text',text:JSON.stringify(await inspectAssets(paths,output,orientation),null,1)}]}));
 
-server.tool(
+server.registerTool(
   'render_screenshots',
-  'Render a complete App Store / Google Play / iPhone Duo screenshot or Creative Assets set as PNG files from a template, captions and screenshot files. Output is organised as language / size / screen. Sizes are output ids from devices (iphone-6.9, iphone-6.5, ipad-13, android-phone, android-tablet-10, watch, macos …) or "WxH".',
-  {
+  { title: 'Render screenshots', description: 'Render a complete App Store / Google Play / iPhone Duo screenshot or Creative Assets set as PNG files from a template, captions and screenshot files. Output is organised as language / size / screen. Sizes are output ids from devices (iphone-6.9, iphone-6.5, ipad-13, android-phone, android-tablet-10, watch, macos …) or "WxH". Use absolute paths; relative paths resolve against the server working directory. Fonts are downloaded once on first render.',
+  inputSchema: {
     ...SpecShape,
     sizes: z.array(z.string()).optional().describe('Output ids or "WxH". Each size gets its own subfolder when more than one.'),
     exportLanguages: z.array(z.string()).optional().describe('Languages to export (default: all languages present in captions).'),
     outDir: z.string().default('./store-screenshots').describe('Output directory.'),
   },
+  annotations: WRITE },
   async (spec) => {
     const all = [...(Array.isArray(spec.shots) ? spec.shots : Object.values(spec.shots || {}).flat()), spec.icon].filter(Boolean);
     for (const p of all) if (!fs.existsSync(p)) return { isError: true, content: [{ type: 'text', text: `file not found: ${p}` }] };
@@ -50,11 +55,14 @@ server.tool(
   }
 );
 
-server.tool(
+server.registerTool(
   'build_project',
-  'Write a project file (.sms.json) that can be imported into the Framegrove web app (Projects → Import project) for visual fine-tuning in the browser. Use when the user wants to edit in the editor instead of final PNGs.',
-  { ...SpecShape, out: z.string().default('./framegrove.sms.json').describe('Output .json path.') },
+  { title: 'Build editable project', description: 'Write a project file (.sms.json) that can be imported into the Framegrove web app (Projects → Import project) for visual fine-tuning in the browser. Use when the user wants to edit in the editor instead of final PNGs.',
+  inputSchema: { ...SpecShape, out: z.string().default('./framegrove.sms.json').describe('Output .json path.') },
+  annotations: WRITE },
   async (spec) => {
+    const all = [...(Array.isArray(spec.shots) ? spec.shots : Object.values(spec.shots || {}).flat()), spec.icon].filter(Boolean);
+    for (const p of all) if (!fs.existsSync(p)) return { isError: true, content: [{ type: 'text', text: `file not found: ${p}` }] };
     const b = await buildBundle(spec);
     fs.writeFileSync(spec.out, JSON.stringify(b));
     return { content: [{ type: 'text', text: `project written: ${path.resolve(spec.out)} (${b.project.screens.length} screens, ${Object.keys(b.assets).length} assets). Import it at https://framegrove.bamstudio.dev/app/#/projects` }] };

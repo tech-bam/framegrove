@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [20, 22]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+          cache-dependency-path: mcp/package-lock.json
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/framegrove/fonts
+          key: framegrove-fonts-${{ hashFiles('mcp/fonts.mjs') }}
+      - run: npm ci
+        working-directory: mcp
+      - run: node mcp/fonts.mjs
+      - run: npm test
+      - run: python3 scripts/build.py
+      - name: Package contents
+        run: npm pack --dry-run
+        working-directory: mcp

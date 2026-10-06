@@ -1,0 +1,15 @@
+name: Feature or template request
+description: A new template, output size, MCP tool or CLI option
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What are you trying to make?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: Store placement, dimensions, reference links or a sketch help.

@@ -27,15 +27,15 @@ For Duo, provide separate screenshot families: `shots:{"iphone-duo-inner":[…]}
 
 Captions use `Headline [highlight] | Subtitle`; brackets mark emphasis. A literal newline separates headline lines. The output defaults to the selected template's sizes. To override sizes, use IDs returned by the catalog or `list_outputs`.
 
-If MCP is unavailable, the standalone package supports:
+If MCP is unavailable, the same engine runs as a CLI (Node.js 20+):
 
 ```sh
-node mcp/cli.mjs templates
-node mcp/cli.mjs render --template duo-paper-inner --name "My App" --shots ./inner-screens --out ./output
-node mcp/cli.mjs project --template duo-paper-inner --shots ./inner-screens --out ./editable.sms.json
+npx framegrove templates
+npx framegrove render --template duo-paper-inner --name "My App" --shots ./inner-screens --out ./output
+npx framegrove project --template duo-paper-inner --shots ./inner-screens --out ./editable.sms.json
 ```
 
-Install from https://framegrove.bamstudio.dev/mcp/ or the dedicated repository https://github.com/tech-bam/framegrove. Do not clone a parent website repository. The skill itself does not include the renderer or install dependencies.
+Add the MCP server with `claude mcp add framegrove -- npx -y framegrove mcp` (other clients: command `npx`, args `["-y", "framegrove", "mcp"]`). Docs: https://framegrove.bamstudio.dev/mcp/ · Source: https://github.com/tech-bam/framegrove. The skill itself does not include the renderer or install dependencies.
 
 ## Review the actual result
 

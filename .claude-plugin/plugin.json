@@ -1,0 +1,14 @@
+{
+  "name": "framegrove",
+  "version": "1.0.0",
+  "description": "App Store, Google Play and iPhone Duo screenshot generator: the Framegrove MCP server plus an agent skill for truthful, coherent store screenshot campaigns.",
+  "author": { "name": "Bam Studio", "email": "merhaba@bamstudio.dev", "url": "https://bamstudio.dev" },
+  "homepage": "https://framegrove.bamstudio.dev",
+  "repository": "https://github.com/tech-bam/framegrove",
+  "license": "MIT",
+  "keywords": ["app-store", "screenshots", "google-play", "mcp", "aso", "creative-assets", "iphone-duo"],
+  "skills": "./skills/",
+  "mcpServers": {
+    "framegrove": { "command": "npx", "args": ["-y", "framegrove@latest", "mcp"] }
+  }
+}

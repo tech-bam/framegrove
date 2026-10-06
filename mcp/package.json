@@ -1,21 +1,63 @@
 {
-  "name": "framegrove-mcp",
+  "name": "framegrove",
   "version": "1.0.0",
-  "description": "MCP server + CLI: App Store / Google Play screenshot sets from templates (Framegrove render engine, Node canvas).",
+  "description": "App Store, Google Play and iPhone Duo screenshot generator. MCP server and CLI that render store screenshots and Apple Creative Assets from templates, captions and real app screenshots.",
+  "mcpName": "io.github.tech-bam/framegrove",
   "type": "module",
   "bin": {
     "framegrove": "cli.mjs",
     "framegrove-mcp": "server.mjs"
   },
+  "files": [
+    "cli.mjs",
+    "server.mjs",
+    "render-node.mjs",
+    "fonts.mjs",
+    "engine/",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "fonts": "node fonts.mjs",
     "start": "node server.mjs",
-    "test": "node verify-studio.mjs"
+    "test": "node verify-studio.mjs",
+    "prepack": "node pack-engine.mjs",
+    "postpack": "node pack-engine.mjs clean"
+  },
+  "engines": {
+    "node": ">=20"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.0.0",
+    "@modelcontextprotocol/sdk": "^1.30.0",
     "@napi-rs/canvas": "^0.1.60",
-    "zod": "^3.23.0"
+    "zod": "^3.25.0"
   },
+  "keywords": [
+    "mcp",
+    "mcp-server",
+    "model-context-protocol",
+    "app-store",
+    "app-store-screenshots",
+    "google-play",
+    "play-store-screenshots",
+    "screenshot-generator",
+    "screenshots",
+    "mockup",
+    "device-frames",
+    "iphone-duo",
+    "creative-assets",
+    "aso",
+    "claude",
+    "cli"
+  ],
+  "homepage": "https://framegrove.bamstudio.dev",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tech-bam/framegrove.git",
+    "directory": "mcp"
+  },
+  "bugs": "https://github.com/tech-bam/framegrove/issues",
+  "funding": "https://buymeacoffee.com/bamstudio",
+  "author": "Bam Studio <merhaba@bamstudio.dev>",
   "license": "MIT"
 }

@@ -1,0 +1,37 @@
+name: Bug report
+description: Something renders or exports incorrectly
+labels: [bug]
+body:
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Where
+      options: [Web editor, MCP server, CLI, Agent skill or plugin]
+    validations:
+      required: true
+  - type: input
+    id: template
+    attributes:
+      label: Template key and output preset
+      placeholder: studio-paper, iphone-6.9
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: For MCP or CLI, include the command or tool arguments. Remove private paths if needed.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What happened and what you expected
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      placeholder: "framegrove 1.0.0, Node 22, macOS 26 / Chrome 140, Claude Code"
+  - type: markdown
+    attributes:
+      value: Please do not attach API keys, private app screenshots or customer data.

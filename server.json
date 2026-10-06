@@ -1,0 +1,30 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.tech-bam/framegrove",
+  "title": "Framegrove: App Store screenshot generator",
+  "description": "Render App Store, Google Play and iPhone Duo screenshots and Apple Creative Assets from templates.",
+  "websiteUrl": "https://framegrove.bamstudio.dev",
+  "repository": {
+    "url": "https://github.com/tech-bam/framegrove",
+    "source": "github",
+    "subfolder": "mcp"
+  },
+  "icons": [
+    { "src": "https://framegrove.bamstudio.dev/favicon.svg", "mimeType": "image/svg+xml" }
+  ],
+  "version": "1.0.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "framegrove",
+      "version": "1.0.0",
+      "runtimeHint": "npx",
+      "transport": { "type": "stdio" },
+      "packageArguments": [{ "type": "positional", "value": "mcp" }],
+      "environmentVariables": [
+        { "name": "FRAMEGROVE_FONTS", "description": "Optional folder for the template font cache (default ~/.cache/framegrove/fonts).", "isRequired": false },
+        { "name": "FRAMEGROVE_OFFLINE", "description": "Set to 1 to skip the one-time font download.", "isRequired": false }
+      ]
+    }
+  ]
+}

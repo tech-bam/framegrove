@@ -1,0 +1,14 @@
+{
+  "name": "framegrove",
+  "owner": { "name": "Bam Studio", "email": "merhaba@bamstudio.dev" },
+  "metadata": { "description": "Framegrove: App Store and Google Play screenshot generator for Claude Code." },
+  "plugins": [
+    {
+      "name": "framegrove",
+      "source": "./",
+      "description": "App Store, Google Play and iPhone Duo screenshot generator: MCP server and agent skill.",
+      "category": "design",
+      "homepage": "https://framegrove.bamstudio.dev"
+    }
+  ]
+}

@@ -1,22 +1,37 @@
-/* Tarayıcı motorunu (../engine) Node'da çalıştırır: @napi-rs/canvas + window/document shim.
-   renderSet(spec) → PNG dosyaları; buildBundle(spec) → tarayıcıya içe aktarılabilir proje JSON'u. */
+/* Runs the browser engine in Node with @napi-rs/canvas and a small window/document shim.
+   renderSet(spec) writes PNG files; buildBundle(spec) returns a project JSON the web editor can import. */
 import { createCanvas, loadImage, GlobalFonts, Image } from '@napi-rs/canvas';
 import vm from 'node:vm';
 import { deflateSync } from 'node:zlib';
-import '../engine/png.js';
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import { fontsDir, fontsReady, downloadFonts } from './fonts.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-const ENGINE = path.join(here, '..', 'engine');
-const FONTS_DIR = path.join(here, 'fonts');
+// npm package: engine/ is copied next to this file at pack time. Source checkout: ../engine.
+const ENGINE = [path.join(here, 'engine'), path.join(here, '..', 'engine')].find((d) => fs.existsSync(path.join(d, 'render.js')));
+if (!ENGINE) throw new Error('Framegrove engine not found next to ' + here);
+await import(pathToFileURL(path.join(ENGINE, 'png.js')).href);
+
+let fontsLoaded = null;
+/** Downloads the template fonts on first render (cached per machine) and registers them. Logs go to stderr. */
+export function loadFonts() {
+  return fontsLoaded ||= (async () => {
+    const dir = fontsDir();
+    if (!fontsReady(dir) && !process.env.FRAMEGROVE_OFFLINE) {
+      process.stderr.write(`framegrove: downloading template fonts to ${dir} (first run only)\n`);
+      try { await downloadFonts(dir); } catch (e) { process.stderr.write(`framegrove: font download failed (${e.message}); rendering with fallback fonts\n`); }
+    }
+    if (fs.existsSync(dir)) for (const f of fs.readdirSync(dir)) if (/\.(ttf|otf)$/i.test(f)) { try { GlobalFonts.registerFromPath(path.join(dir, f)); } catch { /* skip unreadable font */ } }
+    return dir;
+  })();
+}
 
 let ctx = null;
 function engine() {
   if (ctx) return ctx;
-  if (fs.existsSync(FONTS_DIR)) for (const f of fs.readdirSync(FONTS_DIR)) if (/\.(ttf|otf)$/i.test(f)) { try { GlobalFonts.registerFromPath(path.join(FONTS_DIR, f)); } catch (e) { /* atla */ } }
-  for (const ef of ['/System/Library/Fonts/Apple Color Emoji.ttc', '/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf']) if (fs.existsSync(ef)) { try { GlobalFonts.registerFromPath(ef); } catch (e) { /* atla */ } }
+  for (const ef of ['/System/Library/Fonts/Apple Color Emoji.ttc', '/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf']) if (fs.existsSync(ef)) { try { GlobalFonts.registerFromPath(ef); } catch { /* skip */ } }
   const win = {};
   win.window = win; win.console = console; win.Image = Image;
   win.document = { createElement: (tag) => { if (tag !== 'canvas') throw new Error('shim: ' + tag); return createCanvas(1, 1); }, fonts: null, currentScript: null, write: () => {} };
@@ -66,9 +81,9 @@ const toData = (p) => (/^data:/.test(p) ? p : `data:${MIME[path.extname(p).toLow
 /**
  * spec = { template, name, lang:'en', languages?:['en','tr'], captions?: { en:['Title [x] | Subtitle',…], tr:[…] }, lines?:[…],
  *          shots: ['01.png',…] | { global:[…], iphone:[…], ipad:[…], 'android-phone':[…] }, icon?, accent?, rating?, addIcon?, frame?,
- *          sizes:['iphone-6.9'], exportLanguages?, outDir, device?: { x?, y?, w? } (yüzde; kare çıktılarda
- *          şablonun telefon için ayarlanmış cihaz kutusunu yeniden yerleştirmek için) }
- * Tarayıcıdaki Model ile birebir proje kurar.
+ *          sizes:['iphone-6.9'], exportLanguages?, outDir, device?: { x?, y?, w? } (percent; repositions
+ *          the template's phone device box for square or watch outputs) }
+ * Builds the same project the browser Model would.
  */
 export async function buildProject(spec) {
   const w = engine();
@@ -106,18 +121,29 @@ export async function buildProject(spec) {
     if (spec.device && L.type === 'device') ['x', 'y', 'w'].forEach((k) => { if (spec.device[k] != null) L[k] = Number(spec.device[k]); });
     if (accent && L.type === 'element' && (L.kind === 'icon' || L.kind === 'note')) L.iconBg = accent;
   }));
+  // Template eyebrows such as "01 / YOUR APP" are placeholders: use the app name, or drop the placeholder part.
+  const PLACEHOLDER = /YOUR APP|UYGULAMAN/;
+  const appLabel = (l) => (spec.name ? spec.name.toLocaleUpperCase(l) : '');
+  project.screens.forEach((s) => s.layers.forEach((L) => {
+    if (L.type !== 'element' || L.kind !== 'text' || !L.text) return;
+    for (const [l, v] of Object.entries(L.text)) if (PLACEHOLDER.test(v)) L.text[l] = appLabel(l) ? v.replace(PLACEHOLDER, appLabel(l)) : v.split(' / ').filter((x) => !PLACEHOLDER.test(x)).join(' / ');
+  }));
   const first = project.screens[0];
   if (first) {
     first.layers = first.layers.filter((L) => !(L.type === 'element' && (L.kind === 'rating' || L.kind === 'icon')));
+    // An explicit icon replaces a top eyebrow on screen 1; a name alone is already shown by the eyebrow.
+    const eyebrow = first.layers.find((L) => L.type === 'element' && L.kind === 'text' && L.y < 10);
+    if (eyebrow && spec.icon && spec.addIcon !== false) first.layers = first.layers.filter((L) => L !== eyebrow);
     const title = first.layers.find((L) => L.type === 'text');
     const light = Render.contrastFor((title && title.color) || '#ffffff') === '#111214';
-    if (spec.addIcon !== false && tpl.collection !== 'creative' && tpl.collection !== 'duo' && spec.name) first.layers.push(Model.newLayer('element', { kind: 'icon', text: { [lang]: spec.name }, x: 50, y: 3.5, size: 2.8, iconBg: accent || '#6d5ce7', color: (title && title.color) || '#ffffff' }));
+    if (spec.addIcon !== false && tpl.collection !== 'creative' && tpl.collection !== 'duo' && spec.name && (!eyebrow || spec.icon)) first.layers.push(Model.newLayer('element', { kind: 'icon', emoji: '', text: { [lang]: spec.name }, x: 50, y: 3.5, size: 2.8, iconBg: accent || '#6d5ce7', color: (title && title.color) || '#ffffff' }));
     if (spec.rating) first.layers.push(Model.newLayer('element', { kind: 'rating', text: { [lang]: spec.rating }, x: 50, y: title ? title.y + (title.h || 12) + 1 : 20, size: 2.4, bg: light ? '#ffffff' : '#111214', color: light ? '#111214' : '#ffffff' }));
   }
   return { project, assets };
 }
 
 export async function renderSet(spec) {
+  await loadFonts();
   const w = engine();
   const { Render, Devices } = w;
   const { project, assets } = await buildProject(spec);
@@ -150,5 +176,5 @@ export async function renderSet(spec) {
   return { files, screens: project.screens.length, outDir, template: project.template, languages: langs, sizes };
 }
 
-/** Tarayıcı uygulamasına (Projects → Import project) yüklenebilir .sms.json */
+/** Project bundle (.sms.json) for the web editor: Projects → Import project. */
 export async function buildBundle(spec) { const { project, assets } = await buildProject(spec); return { format: 'sms-project-v3', project, assets }; }

@@ -4,7 +4,9 @@ Useful contributions include template compositions, translation corrections, exp
 
 ## Run locally
 
-Run `python3 scripts/build.py`, then serve `public/` with a local HTTP server. For rendering tests, run `npm ci` and `npm run fonts` from `mcp/`, then `npm test` from the repository root.
+Requires Node.js 20+ and Python 3. Run `npm ci` in `mcp/`, then `npm test` from the repository root (template fonts download once to `~/.cache/framegrove/fonts`). Run `python3 scripts/build.py` and serve `public/` with a local HTTP server to try the web editor. Try the MCP server from a checkout with `claude mcp add framegrove-dev -- node "$PWD/mcp/cli.mjs" mcp`.
+
+CI runs the same checks on every pull request. Please follow the [Code of Conduct](CODE_OF_CONDUCT.md); report security issues as described in [SECURITY.md](SECURITY.md).
 
 ## Template changes
 

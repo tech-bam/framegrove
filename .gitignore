@@ -3,3 +3,6 @@ mcp/fonts/
 public/
 .wrangler/
 .DS_Store
+mcp/engine/
+mcp/LICENSE
+*.tgz

@@ -1,66 +1,106 @@
 # Framegrove
 
-A free, local-first App Store Creative Assets and screenshot editor.
+**App Store, Google Play and iPhone Duo screenshot generator.** A free, local-first web editor plus an MCP server and CLI that let your coding agent render store screenshots and Apple Creative Assets from your real app screenshots.
 
-Live: https://framegrove.bamstudio.dev
+[![CI](https://github.com/tech-bam/framegrove/actions/workflows/ci.yml/badge.svg)](https://github.com/tech-bam/framegrove/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/framegrove)](https://www.npmjs.com/package/framegrove)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+
+**Live editor:** https://framegrove.bamstudio.dev
 
 ![Framegrove editor and launch collection](docs/framegrove-live.png)
 
-- 56 curated templates and 172 editable compositions.
-- App Store Header, Search and Universal Creative Assets.
-- Dedicated iPhone Duo inner, outer and inner-landscape series.
-- Eight website languages, 34 caption languages, exact-size exports.
-- Local projects, standalone MCP/CLI and a reusable agent skill.
-- Resize & adapt: save the original and create a separate editable variation for any preset or custom canvas.
+- 56 curated templates and 172 editable compositions: phone, tablet, iPhone Duo and Apple Creative Assets (Header, Search, Universal).
+- Exact-size exports; Apple PNGs are RGB with no alpha channel.
+- Captions in 34 languages; the website in eight.
+- One engine for the web editor, MCP server and CLI. Projects stay on your machine.
 - Free, MIT licensed, no signup or watermark.
 
-[Creative Assets guide](https://framegrove.bamstudio.dev/creative-assets/) · [Duo guide](https://framegrove.bamstudio.dev/iphone-duo/) · [Automation](https://framegrove.bamstudio.dev/mcp/)
+## Use it from your agent (MCP)
 
-## Web editor
-
-From a source checkout: `python3 scripts/build.py` then `python3 -m http.server 8766 --directory public`.
-
-Choose an output from the editor menu or use **Resize & adapt**. Preview either a fitted original composition or recomposed text and devices, then save the original and create a variation. Captions, layers and screenshot slots are preserved. Square, story, landscape, presentation and web hero presets are included; custom canvases support 64–16,384 pixels per side, up to 64 megapixels. Review the resulting composition before export.
-
-## MCP and CLI
-
-Requires Node.js 20+. From `mcp/`, run `npm ci` and `npm run fonts`.
+Requires Node.js 20+.
 
 ```sh
-claude mcp add framegrove -- node "$PWD/server.mjs"
-node cli.mjs templates
-node cli.mjs render --template creative-paper-header --shots ./screenshots --out ./output
+claude mcp add framegrove -- npx -y framegrove mcp
 ```
 
-Installable download: https://framegrove.bamstudio.dev/downloads/framegrove-mcp.zip
+Other clients (Claude Desktop, Cursor, Windsurf, VS Code):
 
-Projects and screenshots are stored locally. Optional AI calls use your own provider key. Back up projects with Export Project before clearing browser storage.
+```json
+{
+  "mcpServers": {
+    "framegrove": { "command": "npx", "args": ["-y", "framegrove", "mcp"] }
+  }
+}
+```
 
-Creative Assets must be previewed in App Store Connect for device-specific cropping. Header and Universal PNG exports have no alpha channel.
+Codex: `codex mcp add framegrove -- npx -y framegrove mcp`
+
+Then ask: *"Take six screenshots of my app in the simulator and make App Store screenshots in English and German with Framegrove."*
+
+| Tool | What it does |
+| --- | --- |
+| `list_templates` | Templates with theme, orientation, default sizes and screen count |
+| `list_outputs` | Exact dimensions for App Store, Google Play, iPhone Duo and Creative Assets |
+| `render_screenshots` | Render PNGs from a template, screenshot paths and captions per language |
+| `build_project` | Write an editable `.sms.json` to fine-tune in the web editor |
+| `inspect_assets` | Check exported dimensions and PNG alpha against an output preset |
+
+### Claude Code plugin
+
+Installs the MCP server together with the Framegrove agent skill, which guides truthful captions, matching display slots and visual review:
+
+```sh
+claude plugin marketplace add tech-bam/framegrove
+claude plugin install framegrove@framegrove
+```
+
+The skill alone lives in [`skills/framegrove/`](skills/framegrove/SKILL.md).
+
+## CLI
+
+```sh
+npx framegrove templates
+npx framegrove outputs
+npx framegrove render --template studio-paper --name "My App" --shots ./screens --lines en.txt --captions-de de.txt --out ./store
+npx framegrove render --template creative-paper-header --shots ./screens --out ./header
+npx framegrove inspect ./store/*.png --output iphone-6.9
+npx framegrove project --template duo-paper-inner --shots ./inner --out ./editable.sms.json
+npx framegrove --help
+```
+
+Caption files have one line per screen: `Headline [highlight] | Subtitle`. Template fonts (Google Fonts, OFL) download once on the first render to `~/.cache/framegrove/fonts`; set `FRAMEGROVE_FONTS` to change the folder or `FRAMEGROVE_OFFLINE=1` to skip it.
+
+Framegrove does not capture simulator screenshots or upload to App Store Connect. Preview Creative Assets in App Store Connect for device-specific cropping. Apple says iPhone Duo uploads open later in 2026; check availability before submitting.
+
+## Repository layout
+
+| Path | Contents |
+| --- | --- |
+| `engine/` | Canvas rendering engine and templates, shared by every surface |
+| `app/` | Web editor |
+| `mcp/` | npm package `framegrove`: MCP server, CLI and Node renderer |
+| `skills/framegrove/` | Agent skill |
+| `.claude-plugin/` | Claude Code plugin and marketplace manifests |
+| `server.json` | MCP Registry entry `io.github.tech-bam/framegrove` |
+| `locales/` | Website and editor translations |
+| `scripts/` | Site build and verification |
+
+## Development
+
+```sh
+cd mcp && npm ci && cd ..
+npm test                   # renders every template, checks MCP tools and exports
+python3 scripts/build.py   # builds the site into public/
+python3 -m http.server 8766 --bind 127.0.0.1 --directory public
+```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). Releases: bump the version in `mcp/package.json`, `server.json` and `.claude-plugin/plugin.json`, update [CHANGELOG.md](CHANGELOG.md), then publish a GitHub release; the publish workflow releases to npm and the MCP Registry.
+
+The live site is deployed by the maintainers to Cloudflare Workers (`npx wrangler deploy`, config not in the repository). The legacy product route redirects to Framegrove; the old editor stays on its original origin so local projects can still be exported and imported here.
 
 ## Support
 
-https://buymeacoffee.com/bamstudio
+Framegrove is free. If it saves you time: https://buymeacoffee.com/bamstudio
 
-## Deployment
-
-```sh
-python3 scripts/build.py
-npx wrangler deploy
-```
-
-The Worker serves `framegrove.bamstudio.dev`. The legacy product route redirects to the new site; the old editor remains available on its original origin so its local IndexedDB projects can still be exported. To move an old project, export it from the old editor and import it into Framegrove.
-
-## Launch validation
-
-56 curated templates: 16 phone series, 24 Apple Creative Assets compositions, 12 iPhone Duo series and 4 tablet series. 568 EN/TR render checks passed. Header, Search, Universal and Duo PNGs were checked for exact dimensions and an RGB colour type without alpha. The standalone MCP download was installed in a clean directory and used to render a Header asset. The live browser Header download was also checked at 3840 × 1646.
-
-## Languages and agent skill
-
-The landing page supports English, Turkish, German, French, Spanish, Italian, Portuguese and Japanese. Turkish browsers start in Turkish; other browsers start in English. Advanced editor help can fall back to English. Captions support 34 languages.
-
-The reusable agent skill is in `skills/framegrove/`. Download it at https://framegrove.bamstudio.dev/downloads/framegrove-skill.zip. MCP provides template discovery, output constraints, rendering, editable projects and exported image inspection.
-
-Duo inner and outer screenshot slots are separate. Apple says Duo uploads will be available later in 2026; check availability before submitting.
-
-Machine-readable product documentation: https://framegrove.bamstudio.dev/llms.txt
+Machine-readable docs: https://framegrove.bamstudio.dev/llms.txt

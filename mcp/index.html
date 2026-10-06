@@ -35,14 +35,16 @@
   <h1><span data-t>Your coding agent.</span> <em data-t>Your design team.</em></h1>
   <p class="lede" data-t>Go from real screenshots to a complete campaign in your agent session. Same engine. Same templates. An editable project for the final touch.</p>
 
-  <h2 data-t>Install</h2><p data-t>Node.js 20+ is required. Download only the Framegrove engine and MCP server, or clone the standalone repository.</p>
-  <pre><code>curl -fL https://framegrove.bamstudio.dev/downloads/framegrove-mcp.zip -o framegrove-mcp.zip
-unzip framegrove-mcp.zip
-cd framegrove-mcp/mcp
-npm ci
-npm run fonts
-claude mcp add framegrove -- node "$PWD/server.mjs"</code></pre>
-  <p><span data-t>Cursor and other clients: command</span> <code>node</code>, args <code>["…/mcp/server.mjs"]</code>.</p>
+  <h2 data-t>Install</h2><p data-t>Node.js 20+ is required. One command adds the MCP server; nothing to clone.</p>
+  <pre><code>claude mcp add framegrove -- npx -y framegrove mcp
+
+# Claude Code plugin: MCP server + agent skill
+claude plugin marketplace add tech-bam/framegrove
+claude plugin install framegrove@framegrove
+
+# Codex
+codex mcp add framegrove -- npx -y framegrove mcp</code></pre>
+  <p><span data-t>Cursor and other clients: command</span> <code>npx</code>, args <code>["-y", "framegrove", "mcp"]</code>.</p>
 
   <p><a href="https://github.com/tech-bam/framegrove" target="_blank" rel="noopener" data-t>View the standalone open-source repository ↗</a></p>
   <h2 data-t>Tools</h2>
@@ -61,11 +63,13 @@ for iphone-6.9 and android-phone-tall.</code></pre>
 unzip framegrove-skill.zip -d ./framegrove-skills
 # Move framegrove-skills/framegrove into your client's skill folder.
 # Codex: ~/.codex/skills/ · Claude Code: .claude/skills/</code></pre><p data-t>Install both the skill and MCP renderer for the complete workflow. Check any existing skill with the same name before replacing it.</p><h2>CLI</h2>
-  <pre><code>node cli.mjs templates
-node cli.mjs render --template duo-paper-inner --shots ./duo-inner --out ./duo-output
-node cli.mjs render --template studio-paper --name "My App" --lang en --lines lines.txt --captions-tr lines.tr.txt \
+  <pre><code>npx framegrove templates
+npx framegrove outputs
+npx framegrove render --template duo-paper-inner --shots ./duo-inner --out ./duo-output
+npx framegrove render --template studio-paper --name "My App" --lang en --lines lines.txt --captions-tr lines.tr.txt \
   --shots ./src --icon icon.png --accent "#12856f" --sizes iphone-6.9,ipad-13,android-phone-tall --out ./out
-node cli.mjs project --template studio-paper --name "My App" --lines lines.txt --shots ./src --out my-app.sms.json</code></pre>
+npx framegrove project --template studio-paper --name "My App" --lines lines.txt --shots ./src --out my-app.sms.json
+npx framegrove inspect ./out/*.png --output iphone-6.9</code></pre>
   <p><span data-t>Caption file: one screen per line,</span> <code>Headline [highlight] | Subtitle</code>. Add <code>--captions-&lt;lang&gt;</code> <span data-t>for every extra language.</span></p>
 </main>
 <footer id="footer"></footer>
