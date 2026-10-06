@@ -28,7 +28,7 @@ function shotsFrom(arg) {
 }
 function spec() {
   return {
-    template: args.template || 'indie', name: args.name || '', lang: args.lang || 'tr',
+    template: args.template || 'studio-paper', name: args.name || '', lang: args.lang || 'tr',
     lines: args.lines ? fs.readFileSync(args.lines, 'utf8').split('\n').map((x) => x.trim()).filter(Boolean) : [],
     shots: shotsFrom(args.shots), icon: args.icon, accent: args.accent, rating: args.rating,
     addIcon: !args['no-icon'], frame: args.frame,

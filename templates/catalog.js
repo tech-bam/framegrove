@@ -137,9 +137,13 @@
     location.href = ROOT + 'app/#/project/' + project.id;
   }
 
-  function route() { const m = location.hash.match(/^#\/t\/([a-z0-9-]+)/i); if (m) showDetail(m[1]); else { showCatalog(); F.dev = location.hash === '#/creative' ? 'creative' : null; refresh(); } }
+  function route() { const m = location.hash.match(/^#\/t\/([a-z0-9-]+)/i); if (m) showDetail(m[1]); else { showCatalog(); F.dev = location.hash === '#/creative' ? 'creative' : null; refresh(); hero(); } }
   function hero() {
     const c = $('#heroCanvas'); if (!c) return;
+    if (F.dev==='creative') {
+      const tpl=byKey('creative-paper-header'),o=Devices.byId('apple-header');c.width=900;c.height=Math.round(900*o.h/o.w);
+      Render.renderScreen(c.getContext('2d'),c.width,c.height,tpl.screens[0],{lang:I18N.lang,defaultLang:'en',imageFor:()=>mock,project:{app:{},languages:{default:'en'}}});return;
+    }
     const picks = ['studio-paper', 'studio-midnight', 'studio-lime', 'studio-clay'].map(byKey).filter(Boolean).concat(TPL.slice(0, 4)).slice(0, 4);
     const w = 200, h = Math.round(w * RATIO), gap = 8; c.width = picks.length * w + (picks.length - 1) * gap; c.height = h;
     const ctx = c.getContext('2d');

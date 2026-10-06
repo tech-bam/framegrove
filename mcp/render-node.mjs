@@ -33,7 +33,7 @@ function engine() {
 
 export function listTemplates() {
   const w = engine();
-  return w.TEMPLATES.filter(t => !t.archived).map((t) => ({ key: t.key, name: t.name, description: t.desc, tags: t.tags || [], categories: t.cats || [], theme: t.theme, skill: t.skill, screens: t.screens.length, orientation: t.orientation, panoramic: !!t.background }));
+  return w.TEMPLATES.filter(t => !t.archived).map((t) => ({ key: t.key, name: t.name, description: t.desc, tags: t.tags || [], categories: t.cats || [], theme: t.theme, skill: t.skill, screens: t.screens.length, orientation: t.orientation, sizes: t.sizes, collection: t.collection, panoramic: !!t.background }));
 }
 
 const MIME = { '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp' };
@@ -88,7 +88,7 @@ export async function buildProject(spec) {
     first.layers = first.layers.filter((L) => !(L.type === 'element' && (L.kind === 'rating' || L.kind === 'icon')));
     const title = first.layers.find((L) => L.type === 'text');
     const light = Render.contrastFor((title && title.color) || '#ffffff') === '#111214';
-    if (spec.addIcon !== false && spec.name) first.layers.push(Model.newLayer('element', { kind: 'icon', text: { [lang]: spec.name }, x: 50, y: 3.5, size: 2.8, iconBg: accent || '#6d5ce7', color: (title && title.color) || '#ffffff' }));
+    if (spec.addIcon !== false && tpl.collection !== 'creative' && spec.name) first.layers.push(Model.newLayer('element', { kind: 'icon', text: { [lang]: spec.name }, x: 50, y: 3.5, size: 2.8, iconBg: accent || '#6d5ce7', color: (title && title.color) || '#ffffff' }));
     if (spec.rating) first.layers.push(Model.newLayer('element', { kind: 'rating', text: { [lang]: spec.rating }, x: 50, y: title ? title.y + (title.h || 12) + 1 : 20, size: 2.4, bg: light ? '#ffffff' : '#111214', color: light ? '#111214' : '#ffffff' }));
   }
   return { project, assets };

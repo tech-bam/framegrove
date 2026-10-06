@@ -11,11 +11,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { listTemplates, renderSet, buildBundle } from './render-node.mjs';
 
-const server = new McpServer({ name: 'framegrove', version: '0.1.0' });
+const server = new McpServer({ name: 'framegrove', version: '1.0.0' });
 
 const SpecShape = {
   template: z.string().describe('Template key from list_templates (e.g. studio-paper, studio-midnight, creative-paper-header, creative-lime-search).'),
-  name: z.string().describe('App name — drawn with the icon on screen 1.'),
+  name: z.string().describe('App name. Optional icon on screenshot templates; Creative Assets preserve their dedicated layout.'),
   lang: z.string().default('en').describe('Default caption language code (en, tr, de, …).'),
   lines: z.array(z.string()).optional().describe('Captions in the default language, one per screen: "Headline [highlight] | Subtitle". Headline ≤30 chars, subtitle ≤55; wrap ONE benefit word in [brackets]; \\n for a line break.'),
   captions: z.record(z.array(z.string())).optional().describe('Captions per language: {"en":[…],"tr":[…]}. Same order and count for every language. Overrides `lines` for that language.'),
