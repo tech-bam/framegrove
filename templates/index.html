@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>App Screenshot Templates — Framegrove</title>
+<meta name="description" content="Browse app screenshot templates for App Store and Google Play. Start with a professionally designed layout, customize text, images, colors and device frames, then export store-ready screenshots.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="../fonts.css?v=1791244900">
+<link rel="stylesheet" href="../site.css?v=1791244900">
+<link rel="stylesheet" href="catalog.css?v=1791244900">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2312856f'/><text x='50' y='68' font-size='54' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='700'>F</text></svg>">
+
+<link rel="canonical" href="https://framegrove.bamstudio.dev/templates/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Framegrove — Free App Store Creative Assets Generator">
+<meta property="og:description" content="Your App Store page has a new billboard. Design Header and Search creative assets, plus store screenshots. Free, no signup.">
+<meta property="og:url" content="https://framegrove.bamstudio.dev/templates/">
+<meta name="twitter:card" content="summary">
+</head>
+<body>
+<header id="nav"></header>
+
+<!-- ===== katalog ===== -->
+<main id="viewCatalog">
+  <section class="thero">
+    <div class="container thero-in">
+      <div>
+        <small data-t>Screenshot Templates</small>
+        <h1><span data-t>App Screenshot</span> <em data-t>Templates</em></h1>
+        <p data-t>Browse app screenshot templates for App Store and Google Play. Start with a professionally designed layout, customize the text, images, colors, and device frames, then export store-ready screenshots for iPhone, iPad, and Android.</p>
+        <p class="thero-meta"><b id="heroCount">0</b> <span data-t>templates</span> · <b id="layoutCount">0</b> <span data-t>editable layouts</span> · <b>20+</b> <span data-t>store sizes</span></p>
+      </div>
+      <div class="thero-art"><canvas id="heroCanvas"></canvas></div>
+    </div>
+  </section>
+
+  <section class="container tcat">
+    <aside class="tside">
+      <button class="side-all on" id="sideAll" data-t>All templates</button>
+      <details open><summary data-t>App Store categories</summary><div id="sideCats" class="side-list"></div></details>
+      <details open><summary data-t>Store and device</summary><div id="sideDevices" class="side-list"></div></details>
+      <details open><summary data-t>Filters</summary>
+        <div class="side-block">
+          <label class="check"><input type="checkbox" id="fFree"><span data-t>Free templates</span></label>
+          <div class="side-h" data-t>Skill</div>
+          <label class="check"><input type="checkbox" id="fSimple"><span data-t>Simple only</span></label>
+          <div class="side-h" data-t>Orientation</div>
+          <div class="chips" id="fOrient"></div>
+          <div class="side-h" data-t>Theme</div>
+          <div class="chips" id="fTheme"></div>
+        </div>
+      </details>
+    </aside>
+    <div class="tmain">
+      <div class="tbar"><span class="tcount"><b id="count">0</b> <span data-t>templates</span></span><input type="search" id="q" data-t-ph placeholder="Search"></div>
+      <div id="cards" class="tcards"></div>
+      <div class="tmore"><button class="btn lg" id="more" hidden></button></div>
+    </div>
+  </section>
+</main>
+
+<!-- ===== şablon detay ===== -->
+<main id="viewDetail" hidden>
+  <div class="container">
+    <div class="crumbs"><a href="../" data-t>Home</a><span>\</span><a href="./" data-t>Templates</a><span>\</span><b id="dName"></b></div>
+    <div class="dstrip" id="dStrip"></div>
+    <div class="dgrid">
+      <div>
+        <h1 id="dTitle"></h1>
+        <div class="dtags" id="dTags"></div>
+        <h3 data-t>About this template</h3>
+        <p id="dAbout" class="dabout"></p>
+        <h3 data-t>Screenshot dimensions</h3>
+        <ul id="dDims" class="ddims"></ul>
+      </div>
+      <aside class="dside card">
+        <h4 data-t>Specifications</h4>
+        <ul id="dSpecs"></ul>
+        <button class="btn primary wide lg" id="dStart" data-t>Start with Template</button>
+        <button class="btn wide" id="dSandbox" data-t>Copy Template to Sandbox</button>
+        <p class="hint" data-t>Start creates a project in your browser; Sandbox lets you try it without saving.</p>
+      </aside>
+    </div>
+    <h3 class="dmore-h" data-t>More templates</h3>
+    <div id="dMore" class="tcards"></div>
+  </div>
+</main>
+
+<div id="startMenu" class="modal"><div class="modal-card narrow">
+  <div class="modal-head"><h2 id="smTitle"></h2><button class="modal-close" data-close>✕</button></div>
+  <div class="modal-body start-opts">
+    <button class="start-opt" data-act="account"><span class="ic">📁</span><span><b data-t>Copy template to projects</b><small data-t>Save a local project in this browser.</small></span></button>
+    <button class="start-opt" data-act="sandbox"><span class="ic">🧪</span><span><b data-t>Copy Template to Sandbox</b><small data-t>Copy template and edit without saving</small></span></button>
+  </div>
+  <div class="modal-foot"><span class="grow"></span><button class="btn" data-close data-t>Cancel</button></div>
+</div></div>
+
+<footer id="footer"></footer>
+
+<script src="../engine/i18n.js?v=1791244900"></script>
+<script src="../engine/frames.js?v=1791244900"></script>
+<script src="../engine/devices.js?v=1791244900"></script>
+<script src="../engine/render.js?v=1791244900"></script>
+<script src="../engine/model.js?v=1791244900"></script>
+<script src="../engine/store.js?v=1791244900"></script>
+<script src="../engine/tpl-dsl.js?v=1791244900"></script>
+<script src="../engine/templates/index.js?v=1791244900"></script>
+<script src="../common.js?v=1791244900"></script>
+<script src="catalog.js?v=1791244900"></script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Automation — Framegrove MCP & CLI</title>
+<meta name="description" content="Render App Store and Google Play screenshot sets from Claude Code or any MCP client. Same templates, same engine, headless.">
+<link rel="stylesheet" href="../fonts.css">
+<link rel="stylesheet" href="../site.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2312856f'/><text x='50' y='68' font-size='54' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='700'>F</text></svg>">
+<style>
+  .doc { max-width: 860px; margin: 0 auto; padding: 48px 24px 80px; }
+  .doc h1 { font-size: clamp(30px, 4vw, 44px); letter-spacing: -.03em; margin-bottom: 10px; }
+  .doc h1 em { font-style: normal; color: var(--brand); }
+  .doc .lede { color: var(--muted); font-size: 16px; margin-bottom: 28px; line-height: 1.6; }
+  .doc h2 { font-size: 20px; margin: 34px 0 10px; }
+  .doc p, .doc li { color: var(--muted); line-height: 1.65; }
+  .doc pre { background: #0f1a1f; color: #d7e6df; padding: 14px 16px; border-radius: 12px; overflow-x: auto; font-size: 12.5px; line-height: 1.55; }
+  .doc code { font-family: ui-monospace, Menlo, monospace; }
+  .doc p code, .doc li code { background: var(--surface-2); border: 1px solid var(--line); border-radius: 5px; padding: 1px 5px; font-size: 12.5px; color: var(--fg); }
+  .tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 14px 0; }
+  .tools .card { padding: 16px; }
+  .tools b { display: block; margin-bottom: 4px; font-family: ui-monospace, Menlo, monospace; font-size: 13px; }
+</style>
+<link rel="canonical" href="https://framegrove.bamstudio.dev/mcp/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Framegrove — Free App Store Creative Assets Generator">
+<meta property="og:description" content="Your App Store page has a new billboard. Design Header and Search creative assets, plus store screenshots. Free, no signup.">
+<meta property="og:url" content="https://framegrove.bamstudio.dev/mcp/">
+<meta name="twitter:card" content="summary">
+</head>
+<body>
+<header id="nav"></header>
+<main class="doc">
+  <h1><span data-t>Let your coding agent</span> <em data-t>make the screenshots</em></h1>
+  <p class="lede" data-t>The MCP server and CLI run the same rendering engine and the same templates as the editor, headless in Node. Claude Code (or any MCP client) can take simulator screenshots, write the captions and render every store size — no browser needed.</p>
+
+  <h2 data-t>Install</h2><p>Node.js 20+ and unzip are required. This download contains only Framegrove’s engine and MCP server. No website repository is needed.</p>
+  <pre><code>curl -fL https://framegrove.bamstudio.dev/downloads/framegrove-mcp.zip -o framegrove-mcp.zip
+unzip framegrove-mcp.zip
+cd framegrove-mcp/mcp
+npm ci
+npm run fonts
+claude mcp add framegrove -- node "$PWD/server.mjs"</code></pre>
+  <p><span data-t>Cursor and other clients: command</span> <code>node</code>, args <code>["…/mcp/server.mjs"]</code>.</p>
+
+  <p><a href="https://github.com/tech-bam/framegrove" target="_blank" rel="noopener">View the standalone open-source repository ↗</a></p>
+  <h2 data-t>Tools</h2>
+  <div class="tools">
+    <div class="card"><b>list_templates</b><span data-t>Every template with key, categories, theme and screen count.</span></div>
+    <div class="card"><b>render_screenshots</b><span data-t>Template + captions (per language) + screenshot files → PNGs organised as language / size / screen.</span></div>
+    <div class="card"><b>build_project</b><span data-t>Same input → a project file you can import into the web editor for fine-tuning.</span></div>
+  </div>
+
+  <h2 data-t>Tell the agent</h2>
+  <pre><code data-t>Take 6 screenshots of the app in the iPhone simulator, put them in store/screenshots/src/,
+write the captions in English and Turkish, then use render_screenshots with the "studio-paper" template
+for iphone-6.9 and android-phone-tall.</code></pre>
+
+  <h2>CLI</h2>
+  <pre><code>node cli.mjs templates
+node cli.mjs render --template studio-paper --name "My App" --lang en --lines lines.txt --captions-tr lines.tr.txt \
+  --shots ./src --icon icon.png --accent "#12856f" --sizes iphone-6.9,ipad-13,android-phone-tall --out ./out
+node cli.mjs project --template studio-paper --name "My App" --lines lines.txt --shots ./src --out my-app.sms.json</code></pre>
+  <p><span data-t>Caption file: one screen per line,</span> <code>Headline [highlight] | Subtitle</code>. Add <code>--captions-&lt;lang&gt;</code> <span data-t>for every extra language.</span></p>
+</main>
+<footer id="footer"></footer>
+<script src="../engine/i18n.js"></script>
+<script src="../common.js"></script>
+<script>
+  window.I18N.extend({ 'Let your coding agent': 'Kodlama ajanın', 'make the screenshots': 'ekran görüntülerini yapsın', 'The MCP server and CLI run the same rendering engine and the same templates as the editor, headless in Node. Claude Code (or any MCP client) can take simulator screenshots, write the captions and render every store size — no browser needed.': 'MCP sunucusu ve CLI, editörle aynı motoru ve aynı şablonları Node içinde tarayıcısız çalıştırır. Claude Code (ya da herhangi bir MCP istemcisi) simülatörden ekran görüntüsü alır, başlıkları yazar ve her mağaza boyutunu üretir — tarayıcı gerekmez.', 'Install': 'Kurulum', 'Cursor and other clients: command': 'Cursor ve diğer istemciler: komut', 'Tools': 'Araçlar', 'Every template with key, categories, theme and screen count.': 'Anahtar, kategori, tema ve ekran sayısıyla tüm şablonlar.', 'Template + captions (per language) + screenshot files → PNGs organised as language / size / screen.': 'Şablon + başlıklar (dil başına) + ekran görüntüsü dosyaları → dil / boyut / ekran olarak klasörlenmiş PNG\'ler.', 'Same input → a project file you can import into the web editor for fine-tuning.': 'Aynı girdi → web editörüne içe aktarıp ince ayar yapabileceğin proje dosyası.', 'Tell the agent': 'Ajana söyle', 'Caption file: one screen per line,': 'Başlık dosyası: her satır bir ekran,', 'for every extra language.': 'her ek dil için.' });
+  window.I18N.set(window.I18N.detect()); window.UI.renderNav('Automation'); window.UI.renderFooter(); window.I18N.apply(document.body);
+</script>
+</body>
+</html>

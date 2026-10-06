@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Framegrove</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="../fonts.css?v=1791244900">
+<link rel="stylesheet" href="../site.css?v=1791244900">
+<link rel="stylesheet" href="app.css?v=1791244900">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2312856f'/><text x='50' y='68' font-size='54' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='700'>F</text></svg>">
+
+</head>
+<body class="app">
+<header id="nav"></header>
+<main id="view"></main>
+
+<!-- modallar app/modals.js tarafından doldurulur -->
+<div id="modalSetup" class="modal"></div>
+<div id="modalScreens" class="modal"></div>
+<div id="modalExport" class="modal"></div>
+<div id="modalAI" class="modal"></div>
+<div id="modalFonts" class="modal"></div>
+<div id="modalShortcuts" class="modal"></div>
+
+<input type="file" id="fileShots" accept="image/*" multiple hidden>
+<input type="file" id="fileOne" accept="image/*" hidden>
+<input type="file" id="fileIcon" accept="image/*" hidden>
+<input type="file" id="fileBg" accept="image/*" hidden>
+<input type="file" id="fileFont" accept=".ttf,.otf,.woff,.woff2" hidden>
+<input type="file" id="fileImport" accept=".json,application/json" hidden>
+
+<script src="../engine/i18n.js?v=1791244900"></script>
+<script src="../engine/png.js?v=1791244900"></script>
+<script src="../engine/zip.js?v=1791244900"></script>
+<script src="../engine/frames.js?v=1791244900"></script>
+<script src="../engine/devices.js?v=1791244900"></script>
+<script src="../engine/render.js?v=1791244900"></script>
+<script src="../engine/model.js?v=1791244900"></script>
+<script src="../engine/store.js?v=1791244900"></script>
+<script src="../engine/tpl-dsl.js?v=1791244900"></script>
+<script src="../engine/templates/index.js?v=1791244900"></script>
+<script src="../common.js?v=1791244900"></script>
+<script src="editor.js?v=1791244900"></script>
+<script src="modals.js?v=1791244900"></script>
+<script src="app.js?v=1791244900"></script>
+</body>
+</html>
