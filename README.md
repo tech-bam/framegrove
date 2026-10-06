@@ -27,3 +27,16 @@ Creative Assets must be previewed in App Store Connect for device-specific cropp
 ## Support
 
 https://buymeacoffee.com/bamstudio
+
+## Deployment
+
+```sh
+python3 scripts/build.py
+npx wrangler deploy
+```
+
+The Worker serves `framegrove.bamstudio.dev`. The legacy product route redirects to the new site; the old editor remains available on its original origin so its local IndexedDB projects can still be exported. To move an old project, export it from the old editor and import it into Framegrove.
+
+## Launch validation
+
+44 curated templates, including 24 Apple Creative Assets compositions. 496 EN/TR render checks passed. Header, Search and Universal PNGs were checked for exact dimensions and an RGB colour type without alpha. The standalone MCP download was installed in a clean directory and used to render a Header asset. The live browser Header download was also checked at 3840 × 1646.
