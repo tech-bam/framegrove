@@ -11,6 +11,38 @@
     check: (label, val, fn, extra) => { const l = el('label', 'check'); const i = el('input'); i.type = 'checkbox'; i.checked = !!val; i.onchange = () => fn(i.checked); l.append(i, el('span', null, label)); if (extra) l.appendChild(el('small', 'hint', ' ' + extra)); return l; },
   };
 
+  function resize(target){
+    const source=P(),editor=E(),sourceId=editor.out;
+    const m=open('#modalResize',`<div class="modal-card resize-card" role="dialog" aria-modal="true" aria-labelledby="resizeTitle"><h2 id="resizeTitle">${t('One design. Every canvas.')}</h2><p class="desc">${t('Create an editable variation. Your current design is saved separately in Projects.')}</p><label for="resizeTarget">${t('Canvas')}</label><select id="resizeTarget"></select><div class="row2 resize-custom" id="resizeCustom"><label>${t('Width')}<input id="resizeW" type="number" min="64" max="16384" value="1200"></label><label>${t('Height')}<input id="resizeH" type="number" min="64" max="16384" value="630"></label></div><label for="resizeOrient">${t('Orientation')}</label><select id="resizeOrient"><option value="portrait">${t('Portrait')}</option><option value="landscape">${t('Landscape')}</option></select><label for="resizeMode">${t('Composition')}</label><select id="resizeMode"><option value="fit">${t('Fit the original composition')}</option><option value="adapt">${t('Recompose text and devices')}</option></select><div class="resize-preview"><canvas id="resizePreview"></canvas></div><p class="hint" id="resizeInfo"></p><p class="hint">${t('All captions, layers and images stay editable. Review the layout and use a matching screenshot when changing device families.')}</p><p class="hint" role="status" id="resizeError"></p><div class="modal-foot"><button class="btn" data-close>${t('Cancel')}</button><span class="grow"></span><button class="btn primary" id="resizeCreate">${t('Save original & create variation')}</button></div></div>`);
+    const sel=$('#resizeTarget');
+    [...new Set(Devices.OUTPUTS.map(o=>o.group))].forEach(group=>{const opt=el('optgroup');opt.label=group;Devices.OUTPUTS.filter(o=>o.group===group).forEach(o=>opt.appendChild(Object.assign(el('option',null,o.label),{value:o.id})));sel.appendChild(opt);});
+    sel.appendChild(Object.assign(el('option',null,t('Custom dimensions…')),{value:'custom'}));
+    sel.value=Devices.OUTPUTS.some(o=>o.id===target)?target:'custom';
+    const current=Devices.byId(target);if(current&&sel.value==='custom'){$('#resizeW').value=current.w;$('#resizeH').value=current.h;}
+    $('#resizeOrient').value=source.orientation||'portrait';
+    let variation=null;
+    function preview(){
+      $('#resizeError').textContent='';const custom=sel.value==='custom';$('#resizeCustom').hidden=!custom;
+      const id=custom?`${$('#resizeW').value}x${$('#resizeH').value}`:sel.value,o=Devices.byId(id);$('#resizeOrient').disabled=!!o?.fixed;if(o?.fixed)$('#resizeOrient').value=o.w>o.h?'landscape':'portrait';
+      if(!o){variation=null;$('#resizeCreate').disabled=true;$('#resizeInfo').textContent=t('Use 64–16384 pixels per side, up to 64 megapixels.');return;}
+      variation=Model.createVariation(source,sourceId,id,$('#resizeOrient').value,$('#resizeMode').value);
+      const d=Devices.dimensions(o,variation.orientation),cv=$('#resizePreview');const scale=Math.min(600/d.W,420/d.H);cv.width=Math.max(1,Math.round(d.W*scale));cv.height=Math.max(1,Math.round(d.H*scale));
+      const screen=variation.screens[Math.max(0,editor.sel)]||variation.screens[0];
+      if(screen)Render.renderScreen(cv.getContext('2d'),cv.width,cv.height,screen,{lang:editor.lang,defaultLang:variation.languages.default,imageFor:Store.imageFor,shotSlot:Devices.slotForOutput(id),project:variation});
+      $('#resizeInfo').textContent=`${d.W} × ${d.H} · ${variation.screens.length} ${t('Screenshots')}`;$('#resizeCreate').disabled=false;
+    }
+    ['resizeTarget','resizeOrient','resizeMode'].forEach(id=>$('#'+id).onchange=preview);['resizeW','resizeH'].forEach(id=>$('#'+id).oninput=preview);preview();
+    $('#resizeCreate').onclick=async()=>{
+      if(!variation)return;const button=$('#resizeCreate');button.disabled=true;
+      try{
+        await window.App.save(true);const original=Model.clone(source);
+        if(window.App.mode==='sandbox'){original.id=Store.newId('p');original.created=Date.now();}
+        await Store.putProject(original);variation.sourceProject=original.id;await Store.putProject(variation);
+        editor.out=variation.sizes[0];close('#modalResize');window.App.go('/project/'+variation.id);toast(t('Original saved. Variation created.'));
+      }catch(error){$('#resizeError').textContent=t('Could not save. Your current design is still open.');button.disabled=false;}
+    };
+  }
+
   /* ================= KURULUM ================= */
   function setup(tab) {
     const p = P();
@@ -42,10 +74,10 @@
       } else if (k === 'sizes') {
         c.innerHTML = `<h2>${t('Output Sizes')}</h2><p class="desc">${t('Select the output sizes that you require for export.')}</p>`;
         const grid = el('div', 'row2');
-        const groups = [['google', 'Android'], ['apple', 'Apple'], ['other', 'Other stores']];
+        const groups = [['google', 'Android'], ['apple', 'Apple'], ['design', 'Design canvases'], ['other', 'Other stores']];
         groups.forEach(([store, label]) => {
           const col = el('div'); col.appendChild(el('h4', null, t(label)));
-          Devices.OUTPUTS.filter((o) => o.store === store).forEach((o) => {
+          [...Devices.OUTPUTS,...p.sizes.filter(id=>!Devices.OUTPUTS.some(o=>o.id===id)).map(Devices.byId).filter(Boolean)].filter((o) => o.store === store).forEach((o) => {
             const wrap = el('div'); wrap.style.marginBottom = '6px';
             wrap.appendChild(F.check(`${o.label} · ${o.w}×${o.h}`, p.sizes.includes(o.id), (v) => { if (v) { if (!p.sizes.includes(o.id)) p.sizes.push(o.id); } else p.sizes = p.sizes.filter((x) => x !== o.id); }));
             wrap.appendChild(el('div', 'hint', `<span style="color:var(--brand-ink)">${t('Display:')} ${esc(o.display || '')}</span>`));
@@ -201,10 +233,10 @@
           for (const sid of selS) { const o = Devices.byId(sid); const { W, H } = dimsOf(o);
             for (const l of selL) { for (let i = 0; i < p.screens.length; i++) {
               const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
-              const context = cv.getContext('2d', (o.creative || o.opaque) ? { alpha: false } : undefined);
+              const context = cv.getContext('2d', (o.store === 'apple') ? { alpha: false } : undefined);
               Render.renderScreen(context, W, H, p.screens[i], { lang: l, defaultLang: p.languages.default, imageFor: Store.imageFor, shotSlot: Devices.slotForOutput(sid), pan: p.screens[i].bg && p.screens[i].bg.panorama ? { i, n: p.screens.length } : null, project: p });
               const exportFmt = o.pngOnly ? 'png' : fmt;
-              const blob = (o.creative || o.opaque) && exportFmt !== 'jpeg' ? new Blob([await OpaquePNG.encode(cv)], { type: 'image/png' }) : await new Promise((r) => cv.toBlob(r, exportFmt === 'jpeg' ? 'image/jpeg' : 'image/png', 0.92));
+              const blob = (o.store === 'apple') && exportFmt !== 'jpeg' ? new Blob([await OpaquePNG.encode(cv)], { type: 'image/png' }) : await new Promise((r) => cv.toBlob(r, exportFmt === 'jpeg' ? 'image/jpeg' : 'image/png', 0.92));
               if (!blob) throw new Error('Image export failed');
               const title = Render.textOf((p.screens[i].layers.find((L) => L.type === 'text') || {}).text, l, p.languages.default);
               files.push({ name: `${l}/${sid}_${W}x${H}/${String(i + 1).padStart(2, '0')}-${slug(title)}.${exportFmt === 'jpeg' ? 'jpg' : 'png'}`, data: new Uint8Array(await blob.arrayBuffer()) });
@@ -405,5 +437,5 @@ Return ONLY JSON: {"translations":{"<lang>":{"<id>":"<text>"}}} with every langu
 
   window.I18N.extend({ 'Select at least one size and language.': 'En az bir boyut ve dil seç.', 'Export failed: ': 'Dışa aktarma başarısız: ', 'Quick start': 'Hızlı başlangıç', 'Tell us about the app': 'Uygulamayı anlat', 'Drop the screenshots': 'Ekran görüntülerini bırak', 'Pick languages': 'Dilleri seç', 'AI writes every caption': 'Başlıkları AI yazar', 'App name': 'Uygulama adı', 'Brand colour': 'Marka rengi', 'Default language': 'Varsayılan dil', 'Also translate to': 'Şu dillere de çevir', 'Show app icon + name on the first screen': 'İlk ekranda ikon + ad göster', 'Screenshots': 'Ekran görüntüleri', 'in order, file names sort them': 'sırayla; dosya adları sıralar', 'Drop raw screenshots here or click to choose': 'Ham ekran görüntülerini buraya bırak ya da tıkla', '{n} screenshots selected': '{n} ekran görüntüsü seçildi', 'No key? Use "Apply without AI" and write captions in the Text tab, or copy the prompt from ✨ AI captions.': 'Anahtar yok mu? "AI olmadan uygula" de, başlıkları Metin sekmesinden yaz ya da ✨ AI başlıklar\'dan prompt\'u kopyala.', 'Apply without AI': 'AI olmadan uygula', 'Apply & write captions': 'Uygula ve başlıkları yaz', 'Applied': 'Uygulandı', 'Applying…': 'Uygulanıyor…', 'Writing captions…': 'Başlıklar yazılıyor…', 'Translating to {n} languages…': '{n} dile çevriliyor…', 'Done — review the captions in the Text tab': 'Bitti — başlıkları Metin sekmesinden gözden geçir', 'What is this project for? (e.g. A/B test with a colourful template)': 'Bu proje ne için? (ör. renkli şablonla A/B testi)', 'Add the languages you export to. Captions are stored per language; use AI to translate or edit each language from the language switcher in the toolbar.': 'Dışa aktaracağın dilleri ekle. Metinler dil başına saklanır; AI ile çevir ya da araç çubuğundaki dil seçiciden her dili düzenle.', 'Advanced project settings for that fine tune.': 'İnce ayar için gelişmiş proje ayarları.', 'Backup': 'Yedek', 'Bulk upload: drop all screenshots here — they fill screens in file-name order': 'Toplu yükleme: tüm ekran görüntülerini buraya bırak — dosya adı sırasıyla ekranlara oturur', 'This screen has no device layer. Add one from the screen panel.': 'Bu ekranda cihaz katmanı yok. Ekran panelinden ekle.', 'Automatically upload your screenshots to App Store Connect and/or the Google Play Console.': 'Ekran görüntülerini App Store Connect ve/veya Google Play Console\'a otomatik yükle.', 'Tip: the zip is organised as language / size / screenshot, matching what the consoles expect.': 'İpucu: zip dil / boyut / ekran görüntüsü olarak düzenlenir; konsolların beklediği yapı.', 'No exports yet.': 'Henüz dışa aktarma yok.', 'images': 'görsel', 'sizes': 'boyut', 'What it does, for whom, what is different. Brand names to keep. 2-4 sentences.': 'Ne yapar, kime, neyi farklı yapar. Korunacak marka adları. 2-4 cümle.', 'No API key? Copy the prompt, paste the answer': 'API anahtarı yok mu? Prompt\'u kopyala, cevabı yapıştır', 'Copy captions prompt': 'Başlık prompt\'unu kopyala', 'Copy translation prompt': 'Çeviri prompt\'unu kopyala', 'Copied': 'Kopyalandı', 'Add languages in Setup → Languages first.': 'Önce Kurulum → Diller\'den dil ekle.', 'Upload a .ttf/.otf/.woff2 file; it becomes the "Custom font" option for text layers in this browser session.': '.ttf/.otf/.woff2 yükle; bu tarayıcı oturumunda metin katmanlarında "Custom font" seçeneği olur.', 'Upload font': 'Font yükle', 'layer': 'katman', 'Nudge layer': 'Katmanı kaydır', 'Close panel': 'Paneli kapat', 'Zoom': 'Yakınlaştır', 'Drag on canvas': 'Tuvalde sürükle', 'Move layer': 'Katmanı taşı', 'Drop images on a screen': 'Ekrana görsel bırak', 'Set screenshot': 'Ekran görüntüsü ata' });
 
-  window.Modals = { setup, screens, exportModal, ai, quick, customFonts, shortcuts };
+  window.Modals = { setup, resize, screens, exportModal, ai, quick, customFonts, shortcuts };
 })();

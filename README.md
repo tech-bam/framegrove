@@ -11,6 +11,7 @@ Live: https://framegrove.bamstudio.dev
 - Dedicated iPhone Duo inner, outer and inner-landscape series.
 - Eight website languages, 34 caption languages, exact-size exports.
 - Local projects, standalone MCP/CLI and a reusable agent skill.
+- Resize & adapt: save the original and create a separate editable variation for any preset or custom canvas.
 - Free, MIT licensed, no signup or watermark.
 
 [Creative Assets guide](https://framegrove.bamstudio.dev/creative-assets/) · [Duo guide](https://framegrove.bamstudio.dev/iphone-duo/) · [Automation](https://framegrove.bamstudio.dev/mcp/)
@@ -18,6 +19,8 @@ Live: https://framegrove.bamstudio.dev
 ## Web editor
 
 From a source checkout: `python3 scripts/build.py` then `python3 -m http.server 8766 --directory public`.
+
+Choose an output from the editor menu or use **Resize & adapt**. Preview either a fitted original composition or recomposed text and devices, then save the original and create a variation. Captions, layers and screenshot slots are preserved. Square, story, landscape, presentation and web hero presets are included; custom canvases support 64–16,384 pixels per side, up to 64 megapixels. Review the resulting composition before export.
 
 ## MCP and CLI
 

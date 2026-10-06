@@ -138,11 +138,11 @@ export async function renderSet(spec) {
       fs.mkdirSync(dir, { recursive: true });
       for (const [i, s] of project.screens.entries()) {
         const c = createCanvas(W, H);
-        const context = c.getContext('2d', (o.creative || o.opaque) ? { alpha: false } : undefined);
+        const context = c.getContext('2d', (o.store === 'apple') ? { alpha: false } : undefined);
         Render.renderScreen(context, W, H, s, { lang: l, defaultLang: project.languages.default, imageFor, shotSlot: Devices.slotForOutput(o.id) || 'global', pan: s.bg && s.bg.panorama ? { i, n: project.screens.length } : null, project });
         const title = Render.textOf((s.layers.find((L) => L.type === 'text') || {}).text, l, project.languages.default);
         const file = path.join(dir, `${String(i + 1).padStart(2, '0')}-${slug(title)}.png`);
-        fs.writeFileSync(file, (o.creative || o.opaque) ? await globalThis.OpaquePNG.encode(c, deflateSync) : c.encodeSync('png'));
+        fs.writeFileSync(file, (o.store === 'apple') ? await globalThis.OpaquePNG.encode(c, deflateSync) : c.encodeSync('png'));
         files.push(file);
       }
     }

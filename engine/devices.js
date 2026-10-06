@@ -29,12 +29,23 @@
     { id: 'android-tablet-10', store: 'google', group: 'Android', label: 'Android 10" Tablets - 16:9', w: 2160, h: 3840, frame: 'tablet', display: 'Galaxy Tab S8 Ultra', free: true },
     { id: 'play-feature', store: 'google', group: 'Google Play', label: 'Play feature graphic', w: 1024, h: 500, frame: 'none', display: '—', landscape: true },
     { id: 'wearos', store: 'google', group: 'Wear OS', label: 'Wear OS', w: 512, h: 512, frame: 'watch-round', display: 'Pixel Watch' },
+    // General design canvases. Dimensions describe the canvas, not a platform requirement.
+    { id: 'social-square', store: 'design', group: 'Design', label: 'Square · 1:1', w: 1080, h: 1080, frame: 'none', fixed: true, free: true },
+    { id: 'social-story', store: 'design', group: 'Design', label: 'Story · 9:16', w: 1080, h: 1920, frame: 'none', fixed: true, free: true },
+    { id: 'social-landscape', store: 'design', group: 'Design', label: 'Landscape · 1200×630', w: 1200, h: 630, frame: 'none', fixed: true, free: true },
+    { id: 'presentation', store: 'design', group: 'Design', label: 'Presentation · 16:9', w: 1920, h: 1080, frame: 'none', fixed: true, free: true },
+    { id: 'web-hero', store: 'design', group: 'Design', label: 'Web hero · 2:1', w: 1920, h: 960, frame: 'none', fixed: true, free: true },
     // Diğer
     { id: 'amazon', store: 'other', group: 'Amazon', label: 'Amazon Appstore', w: 1080, h: 1920, frame: 'android', display: 'Fire phone' },
     { id: 'huawei', store: 'other', group: 'Huawei', label: 'Huawei AppGallery', w: 1080, h: 1920, frame: 'android', display: 'Huawei' },
     { id: 'msstore', store: 'other', group: 'Microsoft', label: 'Microsoft Store mobile', w: 1080, h: 1920, frame: 'android', display: 'Surface Duo' },
   ];
-  const byId = (id) => OUTPUTS.find((o) => o.id === id);
+  const byId = (id) => {
+    const preset=OUTPUTS.find((o) => o.id === id);if(preset)return preset;
+    const m=String(id).match(/^(\d{2,5})x(\d{2,5})$/i);if(!m)return;
+    const w=Number(m[1]),h=Number(m[2]);if(w<64||h<64||w>16384||h>16384||w*h>64000000)return;
+    return{id:String(id).toLowerCase(),store:'design',group:'Custom',label:`Custom · ${w}×${h}`,w,h,frame:'none',fixed:true,free:true};
+  };
   const BASE = { w: 1320, h: 2868 }; // tasarım tabanı
 
   /* Ham ekran görüntüsü yuvaları: her cihaz ailesi için ayrı görsel verilebilir; yoksa 'global' kullanılır. */

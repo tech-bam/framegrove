@@ -2,6 +2,8 @@
 
 Free, MIT-licensed, local-first editor for App Store Creative Assets, iPhone Duo screenshots and App Store/Google Play screenshot campaigns. No signup, subscription or watermark. Optional support: https://buymeacoffee.com/bamstudio
 
+Resize & adapt creates a separate editable project after saving the original. Preview fitted compositions or recomposed text and devices. Includes square, story, landscape, presentation and web hero canvases, plus custom dimensions (64–16,384 pixels per side; maximum 64 megapixels). Captions, layers and device screenshot slots are preserved; review each variation before export.
+
 ## Capabilities
 
 56 curated templates: 16 phone collections (6 editable screens each), 4 tablet collections, 24 Apple Creative Assets compositions and 12 Duo collections (3 screens each). Each template declares its own output sizes and orientation. Projects and screenshots are stored in browser IndexedDB and can be backed up as `.sms.json` files.

@@ -65,10 +65,15 @@
     E.refreshLangs = fillLang;
     tb.appendChild(lang);
     const outSel = el('select'); outSel.id = 'tbOut'; outSel.title = t('Output size');
-    const fillOut = () => { outSel.innerHTML = ''; (E.P.sizes || []).forEach((id) => { const o = Devices.byId(id); if (o) outSel.appendChild(Object.assign(el('option', null, o.label), { value: id })); }); outSel.value = E.out; };
-    fillOut(); outSel.onchange = () => { E.out = outSel.value; renderAll(); };
+    const fillOut = () => {
+      outSel.innerHTML = '';const saved=el('optgroup');saved.label=t('Project outputs');
+      (E.P.sizes || []).forEach((id) => { const o = Devices.byId(id); if (o) saved.appendChild(Object.assign(el('option', null, o.label), { value: id })); });outSel.appendChild(saved);
+      const more=el('optgroup');more.label=t('Create a variation');Devices.OUTPUTS.filter(o=>!E.P.sizes.includes(o.id)).forEach(o=>more.appendChild(Object.assign(el('option',null,o.label),{value:'resize:'+o.id})));more.appendChild(Object.assign(el('option',null,t('Custom dimensions…')),{value:'resize:custom'}));outSel.appendChild(more);outSel.value = E.out;
+    };
+    fillOut(); outSel.onchange = () => { if(outSel.value.startsWith('resize:')){const target=outSel.value.slice(7);outSel.value=E.out;window.Modals.resize(target);return;}E.out = outSel.value; renderAll(); };
     E.refreshOuts = fillOut;
     tb.appendChild(outSel);
+    b('tbResize','↔ '+t('Resize & adapt'),'',()=>window.Modals.resize(E.out));
     b('tbExport', '⬇ ' + t('Preview & Export'), 'primary', () => window.Modals.exportModal('preview'));
     return tb;
   }
@@ -434,8 +439,8 @@
   /* ---------- ekran indir ---------- */
   async function downloadScreen(i) {
     const { W, H } = dims(); const c = document.createElement('canvas'); c.width = W; c.height = H;
-    Render.renderScreen(c.getContext('2d', (out().creative || out().opaque) ? { alpha: false } : undefined), W, H, E.P.screens[i], info(i));
-    const blob = (out().creative || out().opaque) ? new Blob([await OpaquePNG.encode(c)], { type: 'image/png' }) : await new Promise((r) => c.toBlob(r, 'image/png'));
+    Render.renderScreen(c.getContext('2d', (out().store === 'apple') ? { alpha: false } : undefined), W, H, E.P.screens[i], info(i));
+    const blob = (out().store === 'apple') ? new Blob([await OpaquePNG.encode(c)], { type: 'image/png' }) : await new Promise((r) => c.toBlob(r, 'image/png'));
     download(blob, `${String(i + 1).padStart(2, '0')}-${slug(Render.textOf((E.P.screens[i].layers.find((L) => L.type === 'text') || {}).text, E.lang, E.P.languages.default))}-${W}x${H}.png`);
   }
   E.renderTo = (canvas, i, W, H, opts) => { canvas.width = W; canvas.height = H; const inf = info(i); if (opts) Object.assign(inf, opts); Render.renderScreen(canvas.getContext('2d'), W, H, E.P.screens[i], inf); };

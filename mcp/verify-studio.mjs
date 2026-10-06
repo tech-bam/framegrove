@@ -53,6 +53,7 @@ for(const mode of ['outer','inner','inner-landscape']) {
   assert(box.x>=0&&box.y>=0&&box.x+box.w<=dim.W&&box.y+box.h<=dim.H,'Duo device must fit entirely');
  }
 }
+const phone=await renderSet({template:'studio-paper',sizes:['iphone-6.9'],addIcon:false,lines:['Real benefit'],outDir:path.join(temp,'phone')});assert.equal(fs.readFileSync(phone.files[0])[25],2,'Regular Apple screenshots must also be RGB');
 const {project:override}=await buildProject({template:'creative-paper-header',sizes:['apple-search'],addIcon:false});assert.equal(override.sizes[0],'apple-search');
 assert.deepEqual(JSON.parse(JSON.stringify(w.Devices.dimensions(w.Devices.byId('apple-header'),'portrait'))),{W:3840,H:1646});
 console.log(JSON.stringify({templates:templates.length,rendered,applePng:'RGB / exact dimensions',review:path.join(temp,'collection.png')}));

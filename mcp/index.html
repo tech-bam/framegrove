@@ -32,10 +32,10 @@
 <body>
 <header id="nav"></header>
 <main class="doc">
-  <h1><span data-t>Let your coding agent</span> <em data-t>make the screenshots</em></h1>
-  <p class="lede" data-t>The MCP server and CLI run the same rendering engine and the same templates as the editor, headless in Node. Claude Code (or any MCP client) can take simulator screenshots, write the captions and render every store size — no browser needed.</p>
+  <h1><span data-t>Your coding agent.</span> <em data-t>Your design team.</em></h1>
+  <p class="lede" data-t>Go from real screenshots to a complete campaign in your agent session. Same engine. Same templates. An editable project for the final touch.</p>
 
-  <h2 data-t>Install</h2><p>Node.js 20+ and unzip are required. This download contains only Framegrove’s engine and MCP server. No website repository is needed.</p>
+  <h2 data-t>Install</h2><p data-t>Node.js 20+ is required. Download only the Framegrove engine and MCP server, or clone the standalone repository.</p>
   <pre><code>curl -fL https://framegrove.bamstudio.dev/downloads/framegrove-mcp.zip -o framegrove-mcp.zip
 unzip framegrove-mcp.zip
 cd framegrove-mcp/mcp
@@ -44,12 +44,12 @@ npm run fonts
 claude mcp add framegrove -- node "$PWD/server.mjs"</code></pre>
   <p><span data-t>Cursor and other clients: command</span> <code>node</code>, args <code>["…/mcp/server.mjs"]</code>.</p>
 
-  <p><a href="https://github.com/tech-bam/framegrove" target="_blank" rel="noopener">View the standalone open-source repository ↗</a></p>
+  <p><a href="https://github.com/tech-bam/framegrove" target="_blank" rel="noopener" data-t>View the standalone open-source repository ↗</a></p>
   <h2 data-t>Tools</h2>
-  <div class="tools"><div class="card"><b>list_outputs</b><span>Exact output sizes, family slots and file formats.</span></div><div class="card"><b>inspect_assets</b><span>Check dimensions and PNG transparency before uploading.</span></div>
-    <div class="card"><b>list_templates</b><span data-t>Every template with key, categories, theme and screen count.</span></div>
-    <div class="card"><b>render_screenshots</b><span data-t>Template + captions (per language) + screenshot files → PNGs organised as language / size / screen.</span></div>
-    <div class="card"><b>build_project</b><span data-t>Same input → a project file you can import into the web editor for fine-tuning.</span></div>
+  <div class="tools"><div class="card"><b>list_outputs</b><span data-t>Exact output sizes, family slots and file formats.</span></div><div class="card"><b>inspect_assets</b><span data-t>Check dimensions and PNG transparency before uploading.</span></div>
+    <div class="card"><b>list_templates</b><span data-t>Discover templates.</span></div>
+    <div class="card"><b>render_screenshots</b><span data-t>Render exact-size image sets.</span></div>
+    <div class="card"><b>build_project</b><span data-t>Build an editable project for the web editor.</span></div>
   </div>
 
   <h2 data-t>Tell the agent</h2>
@@ -57,10 +57,10 @@ claude mcp add framegrove -- node "$PWD/server.mjs"</code></pre>
 write the captions in English and Turkish, then use render_screenshots with the "studio-paper" template
 for iphone-6.9 and android-phone-tall.</code></pre>
 
-  <h2>Reusable agent skill</h2><p>Give your agent the composition workflow as well as the renderer: real screenshots, coherent campaigns, correct Duo slots, truthful copy and visual review.</p><p><a class="btn primary" href="../downloads/framegrove-skill.zip">Download the Framegrove skill ↗</a> <a href="../skills/framegrove/SKILL.md">Read the instructions</a></p><pre><code>curl -fL https://framegrove.bamstudio.dev/downloads/framegrove-skill.zip -o framegrove-skill.zip
+  <h2 data-t>Reusable agent skill</h2><p data-t>Real screenshots, coherent campaigns, correct Duo slots, truthful copy and visual review.</p><p><a class="btn primary" href="../downloads/framegrove-skill.zip" data-t>Download the Framegrove skill ↗</a> <a href="../skills/framegrove/SKILL.md" data-t>Read the instructions</a></p><pre><code>curl -fL https://framegrove.bamstudio.dev/downloads/framegrove-skill.zip -o framegrove-skill.zip
 unzip framegrove-skill.zip -d ./framegrove-skills
 # Move framegrove-skills/framegrove into your client's skill folder.
-# Codex: ~/.codex/skills/ · Claude Code: .claude/skills/</code></pre><p>The skill is separate from the MCP renderer. Install both for the complete workflow. Review any existing skill with the same name before replacing it.</p><h2>CLI</h2>
+# Codex: ~/.codex/skills/ · Claude Code: .claude/skills/</code></pre><p data-t>Install both the skill and MCP renderer for the complete workflow. Check any existing skill with the same name before replacing it.</p><h2>CLI</h2>
   <pre><code>node cli.mjs templates
 node cli.mjs render --template duo-paper-inner --shots ./duo-inner --out ./duo-output
 node cli.mjs render --template studio-paper --name "My App" --lang en --lines lines.txt --captions-tr lines.tr.txt \
@@ -72,7 +72,7 @@ node cli.mjs project --template studio-paper --name "My App" --lines lines.txt -
 <script src="../engine/site-locales.js"></script><script src="../engine/i18n.js"></script>
 <script src="../common.js"></script>
 <script>
-  window.I18N.extend({ 'Let your coding agent': 'Kodlama ajanın', 'make the screenshots': 'ekran görüntülerini yapsın', 'The MCP server and CLI run the same rendering engine and the same templates as the editor, headless in Node. Claude Code (or any MCP client) can take simulator screenshots, write the captions and render every store size — no browser needed.': 'MCP sunucusu ve CLI, editörle aynı motoru ve aynı şablonları Node içinde tarayıcısız çalıştırır. Claude Code (ya da herhangi bir MCP istemcisi) simülatörden ekran görüntüsü alır, başlıkları yazar ve her mağaza boyutunu üretir — tarayıcı gerekmez.', 'Install': 'Kurulum', 'Cursor and other clients: command': 'Cursor ve diğer istemciler: komut', 'Tools': 'Araçlar', 'Every template with key, categories, theme and screen count.': 'Anahtar, kategori, tema ve ekran sayısıyla tüm şablonlar.', 'Template + captions (per language) + screenshot files → PNGs organised as language / size / screen.': 'Şablon + başlıklar (dil başına) + ekran görüntüsü dosyaları → dil / boyut / ekran olarak klasörlenmiş PNG\'ler.', 'Same input → a project file you can import into the web editor for fine-tuning.': 'Aynı girdi → web editörüne içe aktarıp ince ayar yapabileceğin proje dosyası.', 'Tell the agent': 'Ajana söyle', 'Caption file: one screen per line,': 'Başlık dosyası: her satır bir ekran,', 'for every extra language.': 'her ek dil için.' });
+  window.I18N.extend({ 'Your coding agent.': 'Kodlama ajanın', 'Your design team.': 'ekran görüntülerini yapsın', 'The MCP server and CLI run the same rendering engine and the same templates as the editor, headless in Node. Claude Code (or any MCP client) can take simulator screenshots, write the captions and render every store size — no browser needed.': 'MCP sunucusu ve CLI, editörle aynı motoru ve aynı şablonları Node içinde tarayıcısız çalıştırır. Claude Code (ya da herhangi bir MCP istemcisi) simülatörden ekran görüntüsü alır, başlıkları yazar ve her mağaza boyutunu üretir — tarayıcı gerekmez.', 'Install': 'Kurulum', 'Cursor and other clients: command': 'Cursor ve diğer istemciler: komut', 'Tools': 'Araçlar', 'Discover templates.': 'Anahtar, kategori, tema ve ekran sayısıyla tüm şablonlar.', 'Render exact-size image sets.': 'Şablon + başlıklar (dil başına) + ekran görüntüsü dosyaları → dil / boyut / ekran olarak klasörlenmiş PNG\'ler.', 'Build an editable project for the web editor.': 'Aynı girdi → web editörüne içe aktarıp ince ayar yapabileceğin proje dosyası.', 'Tell the agent': 'Ajana söyle', 'Caption file: one screen per line,': 'Başlık dosyası: her satır bir ekran,', 'for every extra language.': 'her ek dil için.' });
   window.I18N.set(window.I18N.detect()); window.UI.renderNav('Automation'); window.UI.renderFooter(); window.I18N.apply(document.body);
 </script>
 </body>
