@@ -29,8 +29,8 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.30.0",
-    "@napi-rs/canvas": "^0.1.60",
-    "zod": "^3.25.0"
+    "@napi-rs/canvas": "^1.0.13",
+    "zod": "^4.6.7"
   },
   "keywords": [
     "mcp",
